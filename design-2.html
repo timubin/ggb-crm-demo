@@ -1,0 +1,371 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Design 2: Aurora Rail Workspace — Get Global Business CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #EEF2FF 0%, #FDF2F8 36%, #FFF7ED 70%, #ECFDF5 100%);
+    background-attachment: fixed;
+    color: #0F172A;
+    min-height: 100vh;
+    padding: 14px 14px 86px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .workspace-frame {
+    max-width: 1480px;
+    margin: 0 auto;
+    display: flex;
+    gap: 14px;
+    min-height: calc(100vh - 100px);
+  }
+
+  /* ================= FAR-LEFT COLORFUL ICON RAIL ================= */
+  .icon-rail {
+    width: 72px;
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.9);
+    border-radius: 24px;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 14px 32px -12px rgba(79,70,229,0.14);
+    flex-shrink: 0;
+  }
+
+  .rail-logo {
+    width: 44px; height: 44px; border-radius: 14px;
+    background: linear-gradient(135deg, #F26522, #FF8A3D);
+    color: #fff; font-weight: 900; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 18px -5px rgba(242,101,34,0.5);
+    margin-bottom: 6px;
+  }
+
+  .rail-btn {
+    width: 44px; height: 44px; border-radius: 14px; border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px; position: relative;
+    transition: all 0.18s cubic-bezier(.4,0,.2,1);
+    background: transparent;
+  }
+  .rail-btn:hover { transform: scale(1.1); }
+  .rail-btn.active { box-shadow: 0 8px 18px -5px rgba(15,23,42,0.22); transform: scale(1.06); }
+
+  .r-orange  { background: #FFF1EB; color: #F26522; }
+  .r-orange.active { background: linear-gradient(135deg,#F26522,#FF8A3D); color: #fff; }
+  .r-blue    { background: #EFF6FF; color: #2563EB; }
+  .r-blue.active { background: linear-gradient(135deg,#2563EB,#60A5FA); color: #fff; }
+  .r-emerald { background: #ECFDF5; color: #059669; }
+  .r-emerald.active { background: linear-gradient(135deg,#059669,#34D399); color: #fff; }
+  .r-indigo  { background: #EEF2FF; color: #4F46E5; }
+  .r-indigo.active { background: linear-gradient(135deg,#4F46E5,#818CF8); color: #fff; }
+  .r-amber   { background: #FFFBEB; color: #D97706; }
+  .r-amber.active { background: linear-gradient(135deg,#D97706,#FBBF24); color: #fff; }
+  .r-teal    { background: #F0FDFA; color: #0D9488; }
+  .r-teal.active { background: linear-gradient(135deg,#0D9488,#2DD4BF); color: #fff; }
+  .r-pink    { background: #FDF2F8; color: #DB2777; }
+  .r-pink.active { background: linear-gradient(135deg,#DB2777,#F472B6); color: #fff; }
+  .r-purple  { background: #FAF5FF; color: #9333EA; }
+  .r-purple.active { background: linear-gradient(135deg,#9333EA,#C084FC); color: #fff; }
+
+  /* ================= SECONDARY MODULE DRAWER ================= */
+  .sub-panel {
+    width: 224px;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.92);
+    border-radius: 24px;
+    padding: 18px 14px;
+    box-shadow: 0 14px 32px -12px rgba(79,70,229,0.10);
+    display: flex; flex-direction: column; flex-shrink: 0;
+  }
+
+  .sub-logo { height: 28px; width: auto; object-fit: contain; margin-bottom: 16px; }
+  .sub-heading { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #94A3B8; margin: 10px 8px 6px; }
+
+  .mod-list { list-style: none; display: flex; flex-direction: column; gap: 3px; overflow-y: auto; }
+  .mod-btn {
+    width: 100%; display: flex; align-items: center; gap: 9px;
+    padding: 7.5px 10px; border-radius: 11px; border: none; background: transparent;
+    font-family: inherit; font-size: 12.5px; font-weight: 600; color: #475569;
+    cursor: pointer; text-align: left; transition: all 0.15s;
+  }
+  .mod-btn:hover { background: #F1F5F9; color: #0F172A; }
+  .mod-btn.active { background: #0F172A; color: #FFFFFF; font-weight: 700; }
+  .mod-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ================= FLOATING MAIN CANVAS ================= */
+  .canvas-sheet {
+    flex: 1;
+    background: rgba(255,255,255,0.93);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.95);
+    border-radius: 26px;
+    padding: 24px 28px;
+    box-shadow: 0 18px 44px -14px rgba(15,23,42,0.10);
+    min-width: 0;
+  }
+
+  .sheet-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding-bottom: 18px; border-bottom: 1px solid #F1F5F9; margin-bottom: 22px; flex-wrap: wrap;
+  }
+  .sheet-title { font-size: 23px; font-weight: 800; letter-spacing: -0.025em; }
+  .sheet-sub { font-size: 13px; color: #64748B; }
+
+  .chip-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg,#EEF2FF,#FDF2F8); color: #4F46E5;
+    font-size: 11.5px; font-weight: 800; padding: 5px 12px; border-radius: 999px;
+  }
+
+  .btn-grad {
+    height: 38px; padding: 0 16px; border-radius: 12px; border: none;
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    color: #fff; font-family: inherit; font-size: 13px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 8px 18px -6px rgba(79,70,229,0.5);
+  }
+
+  /* Colorful Stat Strip */
+  .stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+  .stat-tile {
+    border-radius: 18px; padding: 18px; position: relative; overflow: hidden;
+    transition: transform 0.18s;
+  }
+  .stat-tile:hover { transform: translateY(-3px); }
+  .st-t1 { background: linear-gradient(135deg,#FFF1EB,#FFEDD5); border: 1px solid #FED7AA; }
+  .st-t2 { background: linear-gradient(135deg,#EFF6FF,#DBEAFE); border: 1px solid #BFDBFE; }
+  .st-t3 { background: linear-gradient(135deg,#ECFDF5,#D1FAE5); border: 1px solid #A7F3D0; }
+  .st-t4 { background: linear-gradient(135deg,#F5F3FF,#EDE9FE); border: 1px solid #DDD6FE; }
+  .st-lbl { font-size: 12px; font-weight: 700; color: #475569; }
+  .st-val { font-size: 26px; font-weight: 800; margin: 4px 0; color: #0F172A; }
+  .st-note { font-size: 11.5px; font-weight: 700; color: #64748B; }
+
+  /* Visual Kanban Board on Dashboard */
+  .section-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .section-bar h2 { font-size: 16px; font-weight: 800; }
+
+  .kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+  .k-col {
+    background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 18px; padding: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .k-head { display: flex; align-items: center; justify-content: space-between; font-size: 12.5px; font-weight: 800; padding-bottom: 6px; }
+  .k-count { background: #FFFFFF; border: 1px solid #E2E8F0; padding: 2px 8px; border-radius: 999px; font-size: 11px; }
+  .k-card {
+    background: #FFFFFF; border: 1px solid #E6ECF5; border-radius: 14px; padding: 13px;
+    box-shadow: 0 2px 6px rgba(15,23,42,0.04); transition: transform 0.16s;
+  }
+  .k-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px -6px rgba(15,23,42,0.10); }
+  .k-pill { display: inline-block; font-size: 10.5px; font-weight: 800; padding: 3px 8px; border-radius: 7px; margin-bottom: 7px; }
+  .k-title { font-size: 13px; font-weight: 700; color: #0F172A; }
+  .k-meta { font-size: 11.5px; color: #64748B; margin-top: 4px; display: flex; justify-content: space-between; }
+
+  /* Bottom Table */
+  .tbl-card { border: 1px solid #E6ECF5; border-radius: 18px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; text-align: left; }
+  th { background: #F8FAFC; font-size: 11px; font-weight: 800; text-transform: uppercase; color: #64748B; padding: 11px 16px; border-bottom: 1px solid #E6ECF5; }
+  td { padding: 13px 16px; font-size: 13px; font-weight: 600; border-bottom: 1px solid #F1F5F9; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Floating Switcher Dock */
+  .design-dock {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: rgba(15,23,42,0.92); backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.14);
+    padding: 7px 9px; border-radius: 999px;
+    display: flex; align-items: center; gap: 6px; z-index: 90;
+    box-shadow: 0 18px 40px -8px rgba(15,23,42,0.45);
+    max-width: 95vw; overflow-x: auto;
+  }
+  .dock-link {
+    text-decoration: none; color: #CBD5E1; font-size: 12px; font-weight: 700;
+    padding: 8px 14px; border-radius: 999px; white-space: nowrap; transition: all 0.16s;
+  }
+  .dock-link:hover { color: #fff; background: rgba(255,255,255,0.10); }
+  .dock-link.active { background: linear-gradient(135deg,#4F46E5,#7C3AED); color: #fff; }
+
+  @media (max-width: 1180px) {
+    .stat-strip, .kanban { grid-template-columns: repeat(2, 1fr); }
+    .sub-panel { display: none; }
+  }
+  @media (max-width: 640px) {
+    .stat-strip, .kanban { grid-template-columns: 1fr; }
+    .icon-rail { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="workspace-frame">
+  <!-- Colorful Icon Rail -->
+  <nav class="icon-rail">
+    <div class="rail-logo">G</div>
+    <button class="rail-btn r-orange active" title="Dashboard" onclick="selectMod('Dashboard', this)">⊞</button>
+    <button class="rail-btn r-blue" title="Customers" onclick="selectMod('Customers', this)">👥</button>
+    <button class="rail-btn r-emerald" title="Sales & Invoices" onclick="selectMod('Sales', this)">$</button>
+    <button class="rail-btn r-indigo" title="Projects" onclick="selectMod('Projects', this)">📁</button>
+    <button class="rail-btn r-amber" title="Tasks" onclick="selectMod('Tasks', this)">✓</button>
+    <button class="rail-btn r-teal" title="Leads" onclick="selectMod('Leads', this)">🎯</button>
+    <button class="rail-btn r-pink" title="Support" onclick="selectMod('Support', this)">🎧</button>
+    <button class="rail-btn r-purple" title="Reports" onclick="selectMod('Reports', this)">📈</button>
+  </nav>
+
+  <!-- Secondary Floating Module List (All 15 CRM Options) -->
+  <aside class="sub-panel">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUoAAABPCAYAAAH6lLyUAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAIhVJREFUeNpiYBgigBHG+H/MdD/Dw58OQMzA8OgnA+O0B4yDyaEsYEfuMP7PIMOOIvE/S+E/mmP/Qz3GD8QfkD2JB8D0oNPkOZThzndI8HqcZSQi9D8isf9DaZDDHwDxBiBuxKKHEYsHkNXg4oPMFUToKlVGUvj/Pwxv3rzZHk9I1UPp/0h8QqH7H4+DGZDM+I9V/ZtS5/8Qx/6vB2FHx8frgY7EZWg9DgvtcTgOt8UI/n0cDv+PEjVAR/lDow0F+Pr6Mg66XA91MMwHCUBHLhx0xdP/fSYMDEoc4GKJ4eEPKA0somY9pKplH2LUQQHRILDkZiOQXQ9lM4LEYTRUKShjTgBhkDgiIczQhjgWxl+gO+gKfIAAGmK10jaj//Dobr8zqGokJrADz5r/Z5AH1khyQAyk/1eq/Meith5H0QED/HjKRhgbX9GFu9z936z2//9SPcIKcRfa/9EKfnx67HHow8tnYnj2i4Hh3g8G9JoISwFPCBxAqy7xeZIRrSiE8fcDsQBSTodE9xavyQfADoWYBS4eNm/egi3trsdRJ8Msc6BC8nNEatwootdA/wdz7cOE5KAHg9GBiJrnsiUDw7//DLBGMbgY6r5L7VrHHppuGaC1jD6QuQCIC6C1DIg+gF4TgWue/+3qDP9X6aOm8klag6owBwigUUSrltv/Rzb/GT7/BfYf/gDTEZT+CKQ/QGkQ/+s/AcaFjz6SWP434ClGyQX/CfjnPrRkfEikWYwUuoUR0cwAVZDCrAwMosDemygrA6PcEYTcEj1+hi9/P8AD9cOfBsbpDxpxGPoAuTgm4GB7aBF+Ea2l4AAt3kn1/H+07h7InINo9jGgiaGbZ49FHp97UfWDemjgFscUrf/AgKunUmrZj9Zq+E9EywUE3kPZ+6EYV2sFW4sHvcViT4R9MDa25hw/FBOjH1JFMrz5zQBucIBqn/s/DLD105FbSnhaSx+QLHFEaowgmcngT6DImQCtpRxxpM6DOFpXlFbr6EXXBCiGicsj0ftxjsgwzn/EiBRAATen7Ph/S94jANjsgDWaQOWPAhEOEsSREgSQ2BuB+AIWNaCqfCK0bG1Ay7LYAh5bhMKaBeggAYv6BDT+fiytT2S7H5A6dBAPbavgBIOtYTdowf8HNgz/L1ow/D9kyvB/kyHD/8W6DMBylOF/qxqoXGX4nyY/JPwBbdDCh1SQhk1A/HoYH0i/h6lHU4PCh4rdRxqiAdHyUDoepVsBDkhQgxjUm2RihPTLgZgx9jIDY841BgZZSD8d3FcfQoGKVpYjl4UM0J6DII7xLGwgALl4AOqFNbkWoHZ/KlSAdRYzsMRjAWPG8Iuj2ZQMABCAXet5cRqIwm+wHryY6B9QK7iyorJdlEV2wVbvUvwLNgp6VO8iu3cFETzpgu1FBA/dpZ72YOvNX9CKCAqiWy8eliVFEA+uPmfSTDJ9nSST2MMu5NFHk8xkJvl478173yT/5bKDy0jP1Z+fxtEy0q92fvxx2Eq/kUMWw2V5AH6cX8TPC+jFS4vHS9v/95Qf799Tx8tFEzrTjal2JiWWZo6aQb2uk69KEp650guAhM3fddjGEDgdmHYBEsBEPyFXq5BBSjDbhquxo8whCohVCDcL00jJsABJtkhcOYFe+bjJVYBpFxx2/i1jF3uMXXrPKJgpw8WBGAvRbVNUDSxApB5qmOkrgMZJxaDdynw/3p5GASY2y8gT89qE6S8Tt0SlvpVbMEsRL4UZngUTyBWdSsb5kcH9vmuLBcXlurUN7OybtQlyirrJB8T1pfu7CulR9bWUcQ7ap0TmK0P0lpPUnpKI07YODSMFvHKo4hG++ucc++5Abk8Z1OCMLEC2gVWtKYxSlqwjalxKAL9LEU7EHF3CbNmkauKF4cP+C/j5FwL2PHwmKwrEDGJr2BimUVNxNdcW/8N7qikW0BsUxMC1n9XugwQTbx7pKjTVslQC4iBFnEQDYNOkScy/XyWnmzEsli5rcMk7LJP2GXKu7gjcI9YZukar1Qpcb9+vLTj6fR2K1x/LNosCl+DWOkDKfsxhMX1kG3UjFrFgDTT3I5nDZD65ZdGJaLdiDCeYk4Vua/ztQIcDeQ5yiQ7WBmD2OIizOWwGtTYHU+RyG/R6zpSnSfw+zQO+mgNcPwX4dEZUPIB3pgFvTQFeOwzoFHfFeyjMdoVcX/L/A6aba9s/lix4W+0j+6njUbbdyyMDEF/OAexliSWgAJPVv+10LEsK463zpA3eLr+xcbw0YnjcpH3EWLytQcYr++e9UXAaJwFbsx6Y+GXBs8yg7cm4Ze4Ci2yT8xFLUq6jpi9qxnOV46auz3C74e4xgIOFoYqvMM68HrfEB8eBXf2Qx78IKQS1tkT2Qle/KuUgxso/Adi7mt82iij+1imxIaqy/QviSlQVKtTOAfXAIe4RqVHDHSkg4IKQYjhHyJHgCo5UcUO1JXptEsHda3EAIQ5G4gAIWocTEkhxERC3TTPM7Mw4b4c3s7PORg3qPmW19u7OeObtb968r5kUfwWdflXSOmFv1VdhfNiGMQvhPjfNx+qIPzNxHsADthLcuLtbsLWgEwEl++Wl6xx02wngTT5PgEiBU38fBZ/+ei7n9q6BzH9oaOtf+W/6/0Pe62zRhnKN6L58V4DSBOOXLy7BM6UI5maAn4FLPwy07OAUxyPwya22jo8sSjngVZuni1x+OdJTxI9FBz8aOQ7Gk6hzmt+P8VhK3Ll1+S788TCC3w9kmFaHas8ase75mW1+rQFnzzT459ZRTDzxzNG1udKIvbHQy9jQ66ixZtycOjrqOVFmK2eJplO2p6WPESADj0MAUgfr1p5MixHiUPcW7B1UYZ/j9Gku3eIzB9Y/h1Jizs2EwaWvKGknRtZkQQS7+fweVEphLCHLh0MYB63gozvTpBBto9HrI2VfV8CMgAixeEqqjqonb2pm1OEX1WBoWfpio7Qs9iHQC1Sy8EnUT9kNpFv7WPxl68/KBSUiD0MsKhG5GLcux/kYj2nA2GKNttwNfKxa6mJgT6HCORbaRdzz+K00WnI8W/Oov2bpC3Zj9yzXbe3oOfjDFC8ovu+BfeuGLPytud61dFK+XV2Cp4IIZrlELPNLZX6uCEkpvpfqwVvfO5Rvpke0la5c+Q3W17/VXxvLy8t9T1BS0sVnROJyk6WoSFpERh0NsK8h0f3zkTI2MESWvpDbaqTo/pT+xzJIYuao06bHYtIx9BaaIWueBtq8ocaQbZKLmz4Z9tmbC9KoecCv39eGCgflbCm09K0GZiyDICL9ZZjxpQqdahN933Uwn5q+GsT081rKb7YtU9801DckI355O46+PI4ZqumpVtUVXzcQTwd5NWJi6Px04WVpKYv0oL8eyXyrP8X5ICL4xdIaIcBI5WNxKenrx2wggKStT9XTYNUBsJGHgREiiZEntVC9aXmwq8cA5Pwx2xll6EuH0P99jDj/acFMpTp/pweXfrjNJWUA8bQ+G2wHH/78ihuIn6dJzzoHZVY/XJYXtGIwCFu/TYP5kVGubjB+w7MNvsaLr9qB29DynL5N42RogMbsX2gYj8wyM3TQ802H640Zxgzup5aqoYdKEpAMnWLLG1+aBpCmFGgbU+9QvbiuIWkii4U4r5i2Qvg3W4aa4NIRbdMzZABo22jHQL34vqG6dAjvw5qjrTYd3xxoVLkNxCfTizFQdeykSPkm4TEYqetd9Tsd4/0sqFmubx3lHJg3PfQuXxpxMJ5Wh3ZBp5CClOk4axQioRN6WtkFFeQPSrGZgwwdskQY8YvKB0uQjD8Prn3z3r1E+PEhE1uWFBzOa7p59SIlIATvV8LPfrw32VEtWSZe78ev76gUW6zrxfuEqueEzi32At211JO4T7VPl1HZqFotGeF9HVxtwETm8sZb2c2V5KYYFQUy4b8Uvkv++dr4/T4HXz8BWBFWrATSjVSW4Iw3zOD3g24Bzjx0cpBb+101AOPa36yOXE8CDKEAMCq7KlKX1XNVrefx68IXWUWAStw3QYvrU+UC4jcgpQ00KEXCfgw8EfP+Ow4tSnCWz5Dg1OD7zzUKnIXkzINCQnqmPT+kgKSkVscwErXUW1TP7IGfc1+X6xL1NXk9Aoibvm04in23n4tXJsdRnP1DeRZxbwTO4OLXbt9N9wUrOPPeNPRJlZbE9NnRoCPuCcn6LpqCm1RZB8jOIWlsSmfb9E3d28zShqOdJ1sXkuFFdNjS+gsq6CRI/vuNd87L6M0sCi/uT2LfHtWkuzZxdIdb5QXnC7LSvwKwdzWxTRxR+E1KS1APccWBW2KkIi6gJKIqhVLhlltFlSD1UrVSDEI99FBM7zSOqDgnSL1U/DgnjgTBoT20saW2lNISB8qhQiUOlXqr4ghBElA83dndsd+O52/Xa37KPLECvN717Ow33/uZeW/cHydOnDhx4uS5E6vFBPTycJ/nUZe8Y1QMpDdzdh41CmRqYcp1qZOugpJe273fA145CsL2GR4hmaxGvlnc6rrWSVJRutb0z71L0EvKzcB4b08rZNT2GcHns/TTAUrz/WMpt5Uti2MLRRagtaR//DntdzZNy6bj8D4ixxwcNUxJ775N/SnGSOqsyI5GxmTny2T6XqdV2djLmkzLFHnKIgsei2JKE6ZdeF76FPuQ7z7CjsNSpqS/vEn91edsGzfOjFJ2NDImO5+jY/2dRN4vWgKSd+zgMwzIBbBLN+Bpwn3wYkhW+FvI+74yPBtMLa5DisAc8lR5EtXEVNwoYo8syJfX59E11S4AcyRkuE5kHHV6DdR57EWBMV8UYMpVHp3e2Qebeur+LA6vjsEXZERVed2vKbRCy/5na42Cd4yaVLnn/MRVDdRSnYnffxZVG79HGcyFssUlauR/rr75Svlm37RWCa001Lk1/kqhnjrZ/rMMHJUQ1B6b9CD11ND5UXHEdtV6Flpr9Ri7XTI4TRnc/i47NVxs7OvlkP1LCKRxS94MIGauJrhebHvcPuqof3sQKLP+6iB+MBXeUuVVkv1RCw4ydus4bCBDEVW+kZRYtQxyeoEkGD1xBed8yACJk+Gr0Eoew4n03VCXxQTXTAsgtXUY+HPU0PPVQb0PDhj6SeyjWcvrOurfYEHGxLYRX9WqAPfWr1YluUn+1nxKKiCXZjQB2vei0Hm+WQRwPDhmIZoByb47FeNZyik9iwoQeYvvzYSO43ELE0j1LEsS7WWbbFiH9kxKBVOu0kLTZlwRjgfrOXjyonuRqi1s+LGgUSVFhYORRd+vKVguB2h7jBhRAdA8i6ksjG3kIo9Uta5oFlhGAIY0DmUGomVx8B4nkxb9a8z5CkC51shFyvchUJIP5p615C8TI2QFhptBoJjQqH5iAaQyOmZSHHw6cJiKF+DIhk6jDSuuAWFAsn6YV5gUfJCWhBAWGBh4MQ7zB44OK9fSdEwacR03I3ULayk7Ve81iLc9XRYBANtJ+MWPKq59t8uead3SrNDJaAzblbP8qML0ME0PT0h+h4QDJw55ab8fMOXjRlhHSCh4utLoGJCnTl1N0tFlDZNsBX3JFRt2KgovSBaW6ZZJIkYWZM+SS3Dfcof92olUQvbVmSLHbH8/YMrHIDClDWPSJVNLDxz4G3bu/DfJQ84k6LjlFDs5zXvNQLQktq02eJ7ExtGxtsEDplynZR+YMsaUt2HOxEwMkIXCfNLOnlLE+XSyZPGiCaRUhClhSKivC6CMw35JIwG24buCgvVjOYXBZowffl3ygAkyYNIvtwlTbPQ8GKrLHj16WwZI0UDuxGtNEvKxWU43B+mX4JuP43km+P1yDK+6YOhTEwH0aQadyk6thA4QsR1sPaHzMe0BE67u+7wdmI9ogZ7YFjbG3361JthkkePChW9hZES+vbb3OxMJbTBVhVhe1TdjoTZML3sMDbZBRSgqDbZUBZEHEg6ICUWoBjShsQkNwActGLwmGWg2ZbCt7H5cCrDJNhseP4Q9V09D38o/rVKAL5MMOXlnWe9lX9YyVgLPew7sa35X0XeLoC7lVxMYW+Z9E0sW1oVBkrA51ih5NDgrkmfRtRFHGMTnk60loAqAYtMgJ4CLYwFXI65JtGFOYlrg99M2962sT4llc/0ObL7/F6z29pUGj5w6LAHjmIVqTlrwyli+Glpr8ShSU1MCo9qoTtkLM10bZ6Bd1ISfQGg7RaCaN4DSFvSqxS0Uhc9MKpYNlumE5MFDYHagDME124VwQVKWlKnXIkRjlByMGEB5UE//ye7BPWQGBlOV4QFon51IUnPzWNiOjIZ1B8J3MS15hhlFhICXQclJWC+veT7xnrKF1WJfg8LEySsiEIdC02BUYj7g2phPpmiq243ZSWzvu8sAGnLd7CSOEI3TkgZjZjyQL7tudpIKKENgJi0zXfPA6NJsnaQPSt8t++ENuPJg3CYLzw/LeGAcdt3qpCugpLf3SPNtrmw4yT3QXOh9Vg/e+KIS3VaZAjnrtv1OU+qfbJdtXOWXZ8ZlpIVrqGXZ5yX2/7B+JCtweli4Dz+vSnfOeecrpvLRujZgkZeXvrcvXM7GpZVvc3DtxKIHPO+glSYIN/ZANCenAfRIP5BzrnJvisIAyUo3L2KweAeeNLikALQ/W4UAul+obZ5BTmnOO1cWSj7z8wxQJRG02GzDbQzbV2P3smiD2vumv+8OcnNeQXs0ylJne4mQftv+GQMmHet3cEpJMCBDKcWIbtTRfSoaX6HM7usBRjXdWIrxO68laUO05vl3uwJAcmFpthHcNgz/l3y22nBoSk+FS8s6e5+PG8DMmKooXK/yEYoQTNnWFeZd2btPWxsQ09bR+Sqvnx6nDVH1/XC9fRY0BWA6VZ4aU4qF7BdCtVgHw2p879qtwrVzDDy8HrnwXbYFypBCvebF3RzQdZHEQWZj4nvYtqGJHHp2R8CSK2F1jIcozZarcu8ge68Dee83IO/fAHKoCuSjm1FVr1LlRwccqtKXmdCGmxJZh9lsXF2Gtp2ojidBM6UcAqwoYeeaLZNL7F+rNuBiBPqFU6++BOT1n+Qu/Mc3A2Cf3yFnUcq2b77rINQl9c0BKjmf4bYdO6dRuypgMs9e3Gy0TX2zAREOjEnN7hXWbQg2of9qe1ATaBPaHYKp7U1h2Rbv32TXNauOo+d2+CEk8tlthyIniSRgylVmS6pKrHgAe+e69Q3JkT9crzpJAZRrPMVWArJDVddLTp4CKB8lzfkOmNQkZ858D1u2rPj/dnvoODHJfwK0d30hbhxn/FvdXfonoScTSPvQWColTQK5nkxaQttQrclD+1BjBQrtQ0C6xI8hlqGvxbqmfSgtRH5ooZDgPchDoQ+WsV9KaaNraIkpraWU9J+TRmdDKYTm5Ac7TnSn6czuzGk0O7s7szur0/nmhxedV9rZ+fub7/tm5vvsPwsLCwsLCwsLi2zI9eQM8lZWYQdVYBeVYYQ/d1ARX+C7PSCfOxD45thBQ/zZc378zqZtEgsLi7uSKNHvvlTFZNegF0eEU4Qo3KMXT5qhe5hEd6Ht/GJw0TaVhYXFgSJK9NZXljGJefiqTYgNYkgwM2HS/0MXxqjhnL9uz1lYWFjMDFoxbtD1J+to8CQi4XTg44WaEJlkclpi6j73f397pbDtMvRbZ/rUxXSwMxeWnAF69iiJRXp+zuqSeIshZ6pYLFOdi7gAIue17H5T8yjRut1O0S7v0jbN4tR5laZD3l+f43o6KPnMCy/BJCLPciqJEv35iTrcU/AwSQX7yxedYNeGVGqcoYQZSJlkA5PrbFzfLx8caV01xIGUiWyrtZJz+kmrC+adBXkQ7O3X6WviXiUX8o9vl0pRPCD5zAOiT0fSd6biAi7G1tyvH18mEhzcHhdhhMAnylEB9giTXGN8LeDvFgUC8+8RknMk9wWyXHDCz0/9lksn/C6ySDTEEqbneNfXZli5Se5CWAy4IUyOBTKUYeLJwZU8Swb4gD5DSNjaaNWR5CSzCxMvsF1JvbN2kaXRoFePfvZtdR8ORLtr+dVqHUuOni89LhUCUlzirns4wpwnCRNBeQY2TJnrlKxS4DKVWGQeftnR2Xn0XLcKk9B6AGGX3rNUsQeGpECxfF4EcYYkDytRHiKJEr3y2FksRbYCkqSS3EggTBUJc4R6+O+2U3ljI7GVfrm6DAXUxKp0E0uYxQwS5gCdKpWdl7fyIssLEpIk0sVGxnTJQH6aewdPmEUIB9adF9QkA2w/iFJ2hsxEfRGp8RidyHpC27t00rTeLu9yhIgStR+twweUJMlFCGmkRZgD+Fih5jz4upZa4ny3f5MOMH+QoY2VOixAG+ehqECYQ3yvg6+W8/N/50kkVQkxtA2QpAhCmDLbp87AL9G8MhcCKvEiCBF06HWQ7KNnJeUzbeO9SQlR1CbKOZbrJNd+KvbWHteGps01JSqZuwqmjR4dF1sZ36fbf5lZxTOtfU2p3uiHDy9jchrukeQS/eT/XuL/nlLJh/hyncevGLXbIG+lBGNU5tVu54W/7ZdKIAt+U8xRJa7CxIbpKXS8VTpITA3eIX1/X0NtybtOZBADB/UgPuB5VtRpHQ8VBqWuSmt6cZDkT8V2jyQTTZESXjFjH6opqvEqgbJ0MKDv7mu+N0H1vrPb2pMi+c8l4V5IwnS6zjf/cjyPHuk0/ro1R9JNRTKD50kImxp2orgIZj3aaXox5SpLyleEyaKU2L5xwb9UIrrJ0kwreRQlaeeJjRzSrMbke8hJi7K6LXJSZ1FiFmqAvs2xE0M+A0leWR5cyf1uwuSVRJBJ/deFyQKpqIExCftpc6r3h+RkDQRq7a4iYS46Pec7/eNwOFBOQQhR/urTEnU/QgqpaUqCSRKTJ3TEC1k7W0JdmkxHpV1UQmOqSkxHMqaxKiGeHq33NBOxbHtUF9LZbNOu8LMy8S70r0rIshpBkg2NCWk9YczV6BhJvStmjyjR858rwUfjor9VxydJRcJccJrZ+xo6nVG898G7zuJVjxMnTuynRGrShiVTI0oSVa1IfztMMTBWIwhEvHc8RhqowPxvnTHVLkU62LOYg1qGpe2blJDErVItTbJwM5Srz5kn+H5B7K4XBa2JkFrTwATBcI5KoB2BeFtptdOJRLmDyrCLPxcgWCxRJEzn+Sz2QqQSGDwR99478knyvvt2olQ8U0TZFVQLFQP7GXpVFSXGCmcfUu3MUYOvZZhcSgp12Z0xSW4qmEhkYCvZFcU6rhiSQFXa0JQG0hLIoqZBlC3Ivj3oJh3fDaGsFyPGiKy/lbn6cWP6HFPNWd+7SO+VhXenMptMiHKEhv7SzpiSoiJhop8+uux87++a7I9EsTw1Tp16C06efHdWg7InNJaONKHzmzUN1bA8Q1Ka15XwnkB4NY2BrNt22yb6rUQq1TUdqJoF4t6TNOGZwEBjEqtSYtXt025EnxiaGit7ROm8stVHa0eDfZAFpE6YBadBRV0VgjR2tOypp25As5ksuGC12+QKuQfh0zhtML/Cetqg9NLlOk0v5SAczrkq7UmksJcipJQsuJADSVoEkv3AcN0aPb46vZgzJp0NNf2NAqqEuei00foXOs7ZfyVIGyhuldQ4QVJ0DDdoX6JKkAZ5Dcys4KaRtLsREoqp1fiqQQknL7D4arzE0KT5NrH53YiJSMOk0wQzp2IaGaREUwKAq5CHDoS3d7kZ+vAyzX/DVANNeQ+6/O2ftfAFv/3GD+C/n14JjgiOINhUPhoHAb/9axxcJNjOHf+7Afr+QxFxdxGe2RHKQpIPPHAbzp37PVy6dFmHJJmdxTTWJI1NyoaoJJiWjLZpB9GdVTchvG3CRAc5T8vE7D/biupdBfYHFUleWjTf1ZRpnqZ14OWcd7GfEm3irAGtpCEhP5363IZsnpPqknHfUSDTLEdOmUllzaD5IHzW+9KlS6HZ8/73rsFnb7wBD964EkiWBSeQLH0p0+Eu8JwfvW3MMQXOSxZbJlntztNJRpJTjA6n9vL7LVep5MNOHRRjbDtlyYCSSUhR55y7oGeUL9HfNyII8UiEFNyL+D2v8svKl8d+xDinGEOuXQZCvVSFdgGNdnFj6lh1w3nUXsI2qJ9yYTsgWhFkHCddJ0VkY+YNFUmlDvKN6lF5kNnjm6Bs0puSJNmiW0Pj/Ykbzp0IgkrcIf+J2/+D+99/Gz7z3pvwqVv/gU+O3ucJs0dsl86L1/opCTLrDv0uJslZ7O1cpgPPNZgmUzsqkhkxrrPn5VqMDZK1DJOG1mRtyIRh8oQSXweyvmmCKBlZd3OoD0IcSUcakYSoWmDObthImBhfMzyOQGOySEeUlKxMbpRmL+9yZDCE6WV/U5U0K5LUkcaSMKQdcyNGOtLxIHSWplfMSAwt0FvprtNB6Wq828m5XdiG5jT9qwdhe2FJMJGEBlXMJKJ6tLJE69/NON4aGu3HH50U83k6JWkOaJo69lYTfZeNp4ZQh+WI+hDbNDSxOAmSXSml3Wy/0MIkuT6H+VoWCG+/VpBXQb4V5bD6VSxxUucADoYjEJm9dXMO8jGL+ouyNedefqXZXGa3nDP46iomyZtgYWFhsR9EyRGmae8eWUFmsRomSOtp2sLCYj6IkiPMPIzlOmhjcjxjm8/CwmJuiVIgzSzGclUQO1qbEqRVry0sLA4OUaIrTwDsjkPxcC7vrjMPNIQ8VbwT86o08x/X/dZvXtjaSxe/xnnZBiW0sFCWLp55mF+8GxRf/efWYSyLiXrQJkr0ztdign9B/gHEdv0QteB41+1IsJjHAa27F7KHB+4x+ixbA2jhe+sJ7wn9Ft8T4/rwZ/vL3P0ufua4kB7bx+ji7zaFewRtfP9MTH6SnldBDT970UBZUj8bhUVlgvzHVycRFxf2PUQtoGeP+oTps/2GJU2LuUPiIGRkRz6TiFER7Lx7JNEyIsefVxlBq6aNn2nyRKiBNM9kKYvxekgkSvT6lwNHvbd25zGmd0Ca9aOWMC3mDRU8CE9CtEMRFyY7SLqG3skc4LYoqXkwiS0/xITQp4Slq0m6MAkJQsilR8lPdb2AkGzsnEHyZrAsxushlijRZUy0t8Z6IWr3kzAbR61KbjEvKFIijCNKpnob2TBNiesIlZjYKSkmXQ3wPRbXhqmjymRHf3cMp8EOoQzx3x6+r+JPoQZhb+dTRAlCmJEsZcmjHuRxvTdWAhX7NibJpZQxvUWy8x1oQOCvqEAJr8C+48gwq0r+XIn41rTD1OIgqt5djljWFchnTxqldrkOfe86vshx2I2I956ESVji45pkTAbXEUpAHv5sQNhxcibVO0tZ8qoHuUT5wThtTO8JYWICcz7/B+3ehV79YkCmaQlzhOwQtZgHuAmqN5NygA5UQkKb+JkWJc9tKpF22CotXb1lz/mhZBkBEYkIf0/SaVN1k6ifHr/CS6VBFyY+HLwM0qtPQDhNlfC6JE/knYOENDOXJa96COno6CePpInpTYkyIEznkT8a6WnIWwlcWZJFmx0UfZFV8Bev2aFpMReg5FFOkjip1LMZI+00YBJKGIDbPkeJKur9Ve5Z3sdAj3t+U3iGqagNpobK7sVIgMytGv98VITFKDTErTtpymLi2ViiROsPBWrxooQkkwgT/+18/U92lFhYWNx1mFa971A1VjWmN6eSOyeu2tq0sLA4BET54TiwDarG9CafH2GSfOZNW5MWFhZ3Lf4PpXyYbB5J86YAAAAASUVORK5CYII=" alt="Get Global Business" class="sub-logo" />
+    <div class="sub-heading">All 15 CRM Modules</div>
+    <ul class="mod-list">
+      <li><button class="mod-btn active" onclick="pickList(this,'Dashboard')"><span class="mod-dot" style="background:#F26522;"></span>Dashboard</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Customers')"><span class="mod-dot" style="background:#2563EB;"></span>Customers</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Sales')"><span class="mod-dot" style="background:#10B981;"></span>Sales</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Subscriptions')"><span class="mod-dot" style="background:#7C3AED;"></span>Subscriptions</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Expenses')"><span class="mod-dot" style="background:#F43F5E;"></span>Expenses</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Contracts')"><span class="mod-dot" style="background:#0891B2;"></span>Contracts</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Projects')"><span class="mod-dot" style="background:#4F46E5;"></span>Projects</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Tasks')"><span class="mod-dot" style="background:#D97706;"></span>Tasks</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Support')"><span class="mod-dot" style="background:#DB2777;"></span>Support</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Leads')"><span class="mod-dot" style="background:#0D9488;"></span>Leads</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Estimate Request')"><span class="mod-dot" style="background:#65A30D;"></span>Estimate Request</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Knowledge Base')"><span class="mod-dot" style="background:#0284C7;"></span>Knowledge Base</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Utilities')"><span class="mod-dot" style="background:#C026D3;"></span>Utilities</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Reports')"><span class="mod-dot" style="background:#9333EA;"></span>Reports</button></li>
+      <li><button class="mod-btn" onclick="pickList(this,'Setup')"><span class="mod-dot" style="background:#475569;"></span>Setup</button></li>
+    </ul>
+  </aside>
+
+  <!-- Main Floating Workspace Sheet -->
+  <main class="canvas-sheet">
+    <div class="sheet-top">
+      <div>
+        <span class="chip-tag">✦ DESIGN CONCEPT 2 — AURORA RAIL WORKSPACE</span>
+        <h1 class="sheet-title" id="pageTitle" style="margin-top:6px;">Dashboard & Live Formation Board</h1>
+        <p class="sheet-sub">Monday.com & Notion-inspired vibrant workspace with dual-rail navigation and visual pipelines.</p>
+      </div>
+      <button class="btn-grad" onclick="alert('Create New Item in Get Global Business CRM')">+ Quick Action</button>
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat-tile st-t1">
+        <div class="st-lbl">Awaiting Payment</div>
+        <div class="st-val">$24,850</div>
+        <div class="st-note">12 Pending Invoices</div>
+      </div>
+      <div class="stat-tile st-t2">
+        <div class="st-lbl">Active Clients</div>
+        <div class="st-val">148</div>
+        <div class="st-note">+19 Added This Month</div>
+      </div>
+      <div class="stat-tile st-t3">
+        <div class="st-lbl">Converted Leads</div>
+        <div class="st-val">69.5%</div>
+        <div class="st-note">64 / 92 Won Deals</div>
+      </div>
+      <div class="stat-tile st-t4">
+        <div class="st-lbl">Active Projects</div>
+        <div class="st-val">19 Live</div>
+        <div class="st-note">US · UK · UAE Filings</div>
+      </div>
+    </div>
+
+    <div class="section-bar">
+      <h2>Live Client Formation Pipeline</h2>
+      <span style="font-size:12px;font-weight:700;color:#64748B;">Visual status board</span>
+    </div>
+
+    <div class="kanban">
+      <div class="k-col">
+        <div class="k-head"><span style="color:#2563EB;">● New Leads</span><span class="k-count">4</span></div>
+        <div class="k-card">
+          <span class="k-pill" style="background:#EFF6FF;color:#2563EB;">US Delaware</span>
+          <div class="k-title">Marcus Reynolds C-Corp</div>
+          <div class="k-meta"><span>$1,850</span><span>Website</span></div>
+        </div>
+        <div class="k-card">
+          <span class="k-pill" style="background:#ECFDF5;color:#059669;">Dubai Mainland</span>
+          <div class="k-title">Fatima Al-Zahra Tech</div>
+          <div class="k-meta"><span>$5,200</span><span>WhatsApp</span></div>
+        </div>
+      </div>
+
+      <div class="k-col">
+        <div class="k-head"><span style="color:#D97706;">● Filing In Progress</span><span class="k-count">6</span></div>
+        <div class="k-card">
+          <span class="k-pill" style="background:#FFF1EB;color:#F26522;">Wyoming LLC</span>
+          <div class="k-title">Apex Ventures LLC</div>
+          <div class="k-meta"><span>82% Done</span><span>Sarah K.</span></div>
+        </div>
+        <div class="k-card">
+          <span class="k-pill" style="background:#F5F3FF;color:#7C3AED;">UK LTD + VAT</span>
+          <div class="k-title">BrightScale UK Ltd</div>
+          <div class="k-meta"><span>91% Done</span><span>Rakib H.</span></div>
+        </div>
+      </div>
+
+      <div class="k-col">
+        <div class="k-head"><span style="color:#7C3AED;">● Banking & EIN</span><span class="k-count">5</span></div>
+        <div class="k-card">
+          <span class="k-pill" style="background:#ECFEFF;color:#0891B2;">Mercury Bank</span>
+          <div class="k-title">CloudNest Commerce</div>
+          <div class="k-meta"><span>KYC Sent</span><span>Nadia M.</span></div>
+        </div>
+      </div>
+
+      <div class="k-col">
+        <div class="k-head"><span style="color:#059669;">● Delivered</span><span class="k-count">12</span></div>
+        <div class="k-card">
+          <span class="k-pill" style="background:#ECFDF5;color:#059669;">Completed</span>
+          <div class="k-title">Nova Digital FZE</div>
+          <div class="k-meta"><span>$4,650 Paid</span><span>Tariq A.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-bar"><h2>Recent Invoices & Billing</h2></div>
+    <div class="tbl-card">
+      <table>
+        <thead><tr><th>Invoice</th><th>Client</th><th>Service</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>#INV-2048</td><td>Apex Ventures LLC</td><td>US LLC + EIN + Bank</td><td>$1,490</td><td><span class="k-pill" style="background:#ECFDF5;color:#059669;margin:0;">Paid</span></td></tr>
+          <tr><td>#INV-2047</td><td>BrightScale UK Ltd</td><td>UK LTD + VAT</td><td>$980</td><td><span class="k-pill" style="background:#FFFBEB;color:#D97706;margin:0;">Unpaid</span></td></tr>
+          <tr><td>#INV-2046</td><td>Nova Digital FZE</td><td>Dubai IFZA License</td><td>$4,650</td><td><span class="k-pill" style="background:#EFF6FF;color:#2563EB;margin:0;">Partial</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- Floating Design Switcher Dock -->
+<div class="design-dock">
+  <a href="index.html" class="dock-link">🏠 All Designs</a>
+  <a href="design-1.html" class="dock-link">1. Horizon Bento</a>
+  <a href="design-2.html" class="dock-link active">2. Aurora Rail</a>
+  <a href="design-3.html" class="dock-link">3. Obsidian Glass</a>
+  <a href="classic.html" class="dock-link">4. Classic (4 Themes)</a>
+</div>
+
+<script>
+  function selectMod(name, btn) {
+    document.querySelectorAll('.rail-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('pageTitle').textContent = name === 'Dashboard' ? 'Dashboard & Live Formation Board' : name + ' Workspace';
+  }
+  function pickList(btn, name) {
+    document.querySelectorAll('.mod-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('pageTitle').textContent = name === 'Dashboard' ? 'Dashboard & Live Formation Board' : name + ' Workspace';
+  }
+</script>
+</body>
+</html>
