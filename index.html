@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Get Global Business — CRM Redesign Concepts</title>
+<title>Get Global Business — 3 CRM Redesign Versions (Exact Live Layout)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,241 +15,178 @@
     background-image:
       radial-gradient(circle at 15% 10%, rgba(242,101,34,0.09) 0%, transparent 40%),
       radial-gradient(circle at 85% 12%, rgba(37,99,235,0.10) 0%, transparent 42%);
-    color: #0F172A;
-    min-height: 100vh;
-    padding: 36px 20px 60px;
-    -webkit-font-smoothing: antialiased;
+    color: #0F172A; min-height: 100vh; padding: 40px 20px 60px; -webkit-font-smoothing: antialiased;
   }
-
-  .wrap { max-width: 1280px; margin: 0 auto; }
-
+  .wrap { max-width: 1260px; margin: 0 auto; }
   .hero { text-align: center; max-width: 780px; margin: 0 auto 42px; }
-  .logo-pill {
-    display: inline-flex; align-items: center; background: #FFFFFF;
-    padding: 10px 20px; border-radius: 16px; border: 1px solid #E2E8F0;
-    box-shadow: 0 8px 24px -10px rgba(15,23,42,0.10); margin-bottom: 20px;
-  }
+  .logo-pill { display: inline-flex; align-items: center; background: #FFFFFF; padding: 10px 20px; border-radius: 16px; border: 1px solid #E2E8F0; box-shadow: 0 8px 24px -10px rgba(15,23,42,0.10); margin-bottom: 20px; }
   .logo-pill img { height: 38px; width: auto; display: block; }
-
-  .eyebrow {
-    display: inline-block; font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em;
-    text-transform: uppercase; color: #F26522; background: #FFF1EB;
-    padding: 5px 14px; border-radius: 999px; margin-bottom: 12px;
-  }
-  h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.18; margin-bottom: 12px; }
+  .eyebrow { display: inline-block; font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #F26522; background: #FFF1EB; padding: 5px 14px; border-radius: 999px; margin-bottom: 12px; }
+  h1 { font-size: 35px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.18; margin-bottom: 12px; }
   .lead { font-size: 15.5px; color: #475569; line-height: 1.65; }
 
-  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 28px; }
-
-  .concept-card {
-    background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 24px;
-    overflow: hidden; display: flex; flex-direction: column;
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .card {
+    background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 24px; overflow: hidden;
+    display: flex; flex-direction: column; text-decoration: none; color: inherit;
     box-shadow: 0 10px 30px -12px rgba(15,23,42,0.08);
-    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-    text-decoration: none; color: inherit;
+    transition: transform 0.22s, box-shadow 0.22s;
   }
-  .concept-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 24px 48px -16px rgba(15,23,42,0.16);
-    border-color: #CBD5E1;
-  }
+  .card:hover { transform: translateY(-6px); box-shadow: 0 24px 48px -16px rgba(15,23,42,0.16); }
 
-  /* Visual Mini Mockup Previews */
-  .thumb {
-    height: 196px; padding: 16px; position: relative; overflow: hidden;
-    display: flex; flex-direction: column; justify-content: space-between;
-  }
-  .t1 { background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border-bottom: 1px solid #E2E8F0; }
-  .t2 { background: linear-gradient(135deg, #EEF2FF 0%, #FDF2F8 50%, #FFF7ED 100%); border-bottom: 1px solid #E2E8F0; }
-  .t3 { background: linear-gradient(135deg, #070B14 0%, #111C33 65%, #1E3A8A 100%); border-bottom: 1px solid #1E293B; }
+  .thumb { height: 190px; padding: 14px; display: flex; gap: 10px; border-bottom: 1px solid #E2E8F0; }
+  .t1 { background: #F3F6FB; }
+  .t2 { background: #EDF1F7; }
+  .t3 { background: #070B14; border-bottom-color: #1E293B; }
 
-  .mock-top { height: 22px; border-radius: 8px; background: #FFFFFF; box-shadow: 0 3px 10px rgba(15,23,42,0.08); display: flex; align-items: center; gap: 6px; padding: 0 10px; }
-  .mock-dot { width: 7px; height: 7px; border-radius: 50%; }
-  .mock-hero { height: 52px; border-radius: 12px; background: linear-gradient(120deg,#0F172A,#1E3A8A); margin: 10px 0 8px; }
-  .mock-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-  .mock-box { height: 54px; border-radius: 10px; background: #FFFFFF; border: 1px solid #E2E8F0; }
+  .m-sb { width: 52px; border-radius: 12px; padding: 8px 6px; display: flex; flex-direction: column; gap: 6px; }
+  .m-main { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .m-hero { height: 42px; border-radius: 10px; }
+  .m-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
+  .m-box { height: 28px; border-radius: 7px; }
+  .m-2col { flex: 1; display: grid; grid-template-columns: 1.7fr 1fr; gap: 8px; }
+  .m-pnl { border-radius: 10px; }
 
-  .mock-rail-wrap { display: flex; gap: 8px; height: 100%; }
-  .mock-rail { width: 28px; border-radius: 10px; background: rgba(255,255,255,0.9); display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 0; }
-  .mock-sheet { flex: 1; border-radius: 14px; background: rgba(255,255,255,0.95); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-
-  .mock-dark-wrap { display: grid; grid-template-columns: 54px 1fr 64px; gap: 8px; height: 100%; }
-  .mock-glass { border-radius: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); padding: 8px; }
-
-  .card-body { padding: 22px 24px 24px; flex: 1; display: flex; flex-direction: column; }
+  .body { padding: 22px 24px 24px; flex: 1; display: flex; flex-direction: column; }
   .tag-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .num-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; }
-  .card-h2 { font-size: 19px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; }
-  .card-p { font-size: 13.5px; color: #64748B; line-height: 1.55; margin-bottom: 18px; flex: 1; }
-  .feat-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; font-size: 12.5px; font-weight: 600; color: #334155; }
+  h2 { font-size: 19px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; }
+  .desc { font-size: 13.5px; color: #64748B; line-height: 1.55; margin-bottom: 16px; flex: 1; }
+  .feats { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; font-size: 12.5px; font-weight: 600; color: #334155; }
+  .open-btn { display: flex; align-items: center; justify-content: center; height: 44px; border-radius: 13px; font-size: 13.5px; font-weight: 800; color: #fff; }
 
-  .open-btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    height: 44px; border-radius: 13px; font-size: 13.5px; font-weight: 800; color: #FFFFFF;
-    transition: opacity 0.16s;
-  }
-  .btn-1 { background: linear-gradient(135deg,#F26522,#FF8A3D); box-shadow: 0 8px 18px -6px rgba(242,101,34,0.5); }
-  .btn-2 { background: linear-gradient(135deg,#4F46E5,#7C3AED); box-shadow: 0 8px 18px -6px rgba(79,70,229,0.5); }
-  .btn-3 { background: linear-gradient(135deg,#0F172A,#1D4ED8); box-shadow: 0 8px 18px -6px rgba(29,78,216,0.5); }
-
-  /* Bonus Classic Bar */
-  .bonus-bar {
-    background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 20px;
-    padding: 18px 24px; display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; flex-wrap: wrap; box-shadow: 0 6px 20px -10px rgba(15,23,42,0.06);
-  }
-  .bonus-link {
-    text-decoration: none; background: #0F172A; color: #FFFFFF;
-    padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
-    white-space: nowrap;
-  }
-
-  @media (max-width: 980px) {
-    .grid { grid-template-columns: 1fr; }
-    h1 { font-size: 28px; }
-  }
+  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } h1 { font-size: 28px; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="hero">
     <div class="logo-pill"><img src="data:image/png;base64,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" alt="Get Global Business" /></div>
-    <div><span class="eyebrow">✦ Interactive UI/UX Redesign Concepts</span></div>
-    <h1>Choose Your Favorite CRM Experience</h1>
+    <div><span class="eyebrow">✦ 3 Extraordinary CRM Redesign Versions</span></div>
+    <h1>Same Exact Live Structure — Stunning New Look</h1>
     <p class="lead">
-      3 completely distinct, modern & colorful CRM designs — while preserving <strong>100% of your existing 15 CRM modules & functionality</strong> with zero breaking changes. Click any concept below to explore it live.
+      Every single menu, widget, chart, and tab stays in its <strong>exact live CRM position</strong> — completely transformed with crisp colorful vector icons, modern cards, and 3 distinct visual themes.
     </p>
   </header>
 
-  <div style="background:linear-gradient(125deg,#0F172A 0%,#1E293B 50%,#1E3A8A 100%);border-radius:24px;padding:24px 28px;color:#fff;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;box-shadow:0 20px 44px -16px rgba(15,23,42,0.35);">
-    <div style="max-width:700px;">
-      <span style="display:inline-block;background:linear-gradient(135deg,#F26522,#FF8A3D);color:#fff;font-size:11px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;padding:4px 12px;border-radius:999px;margin-bottom:10px;">★ 1-to-1 Exact Live CRM Layout (Recommended)</span>
-      <h2 style="font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px;">Exact Live Dashboard — Modern Colorful Redesign (3 Styles)</h2>
-      <p style="font-size:14px;color:#CBD5E1;">Every single widget, chart, tab, and sidebar item stays in the <strong>exact same position</strong> as your live CRM (Operations Hub, Quick Stats, Finance Overview, User Tabs, Calendar, Payment Records, To-Do, Leads, Projects &amp; Tickets) — upgraded with modern colorful icons &amp; 3 live visual styles.</p>
-    </div>
-    <a href="exact-dashboard.html" style="text-decoration:none;background:linear-gradient(135deg,#F26522,#FF8A3D);color:#fff;padding:13px 22px;border-radius:14px;font-size:14px;font-weight:800;white-space:nowrap;box-shadow:0 10px 24px -6px rgba(242,101,34,0.55);">Open Exact Layout Demo →</a>
-  </div>
-
   <section class="grid">
-    <!-- DESIGN 1 -->
-    <a href="design-1.html" class="concept-card">
+    <!-- VERSION 1 -->
+    <a href="design-1.html" class="card">
       <div class="thumb t1">
-        <div class="mock-top">
-          <span class="mock-dot" style="background:#F26522;"></span>
-          <span class="mock-dot" style="background:#2563EB;"></span>
-          <span class="mock-dot" style="background:#10B981;"></span>
-          <span class="mock-dot" style="background:#7C3AED;"></span>
+        <div class="m-sb" style="background:#fff;border:1px solid #E5ECF6;">
+          <div style="height:8px;border-radius:4px;background:#F26522;"></div>
+          <div style="height:6px;border-radius:3px;background:#DBEAFE;"></div>
+          <div style="height:6px;border-radius:3px;background:#D1FAE5;"></div>
+          <div style="height:6px;border-radius:3px;background:#EDE9FE;"></div>
         </div>
-        <div class="mock-hero"></div>
-        <div class="mock-row">
-          <div class="mock-box"></div>
-          <div class="mock-box"></div>
-          <div class="mock-box"></div>
+        <div class="m-main">
+          <div class="m-hero" style="background:linear-gradient(120deg,#0F172A,#1E3A8A);"></div>
+          <div class="m-4">
+            <div class="m-box" style="background:#fff;border:1px solid #E5ECF6;"></div>
+            <div class="m-box" style="background:#fff;border:1px solid #E5ECF6;"></div>
+            <div class="m-box" style="background:#fff;border:1px solid #E5ECF6;"></div>
+            <div class="m-box" style="background:#fff;border:1px solid #E5ECF6;"></div>
+          </div>
+          <div class="m-2col">
+            <div class="m-pnl" style="background:#fff;border:1px solid #E5ECF6;"></div>
+            <div class="m-pnl" style="background:#fff;border:1px solid #E5ECF6;"></div>
+          </div>
         </div>
       </div>
-      <div class="card-body">
+      <div class="body">
         <div class="tag-row">
-          <span class="num-badge" style="background:#FFF1EB;color:#F26522;">CONCEPT 01</span>
-          <span style="font-size:12px;font-weight:700;color:#64748B;">Stripe / Mercury Style</span>
+          <span class="num-badge" style="background:#FFF1EB;color:#F26522;">VERSION 01</span>
+          <span style="font-size:12px;font-weight:700;color:#64748B;">Clean Daylight SaaS</span>
         </div>
-        <h2 class="card-h2">Horizon Top-Nav Bento</h2>
-        <p class="card-p">Replaces the old sidebar with a sleek floating top mega-bar and an executive Bento-grid dashboard with colorful gradient icons.</p>
-        <ul class="feat-list">
-          <li>✓ Floating Top Mega-Menu (All 15 Modules)</li>
-          <li>✓ Executive Hero Summary & Donut Chart</li>
-          <li>✓ Ultra-clean, airy Bento Cards</li>
+        <h2>Luminous SaaS</h2>
+        <p class="desc">Crisp white sidebar &amp; elevated cards with pastel-tinted colorful SVG icons, soft shadows, and GGB Orange + Royal Blue accents.</p>
+        <ul class="feats">
+          <li>✓ Exact Live Widget &amp; Menu Positions</li>
+          <li>✓ Crisp Colorful Vector SVG Icons</li>
+          <li>✓ Airy, Modern &amp; Easy on the Eyes</li>
         </ul>
-        <div class="open-btn btn-1">Open Design 1 Live →</div>
+        <div class="open-btn" style="background:linear-gradient(135deg,#F26522,#FF8A3D);">Open Version 1 Live →</div>
       </div>
     </a>
 
-    <!-- DESIGN 2 -->
-    <a href="design-2.html" class="concept-card">
+    <!-- VERSION 2 -->
+    <a href="design-2.html" class="card">
       <div class="thumb t2">
-        <div class="mock-rail-wrap">
-          <div class="mock-rail">
-            <span class="mock-dot" style="background:#F26522;width:12px;height:12px;border-radius:4px;"></span>
-            <span class="mock-dot" style="background:#2563EB;width:12px;height:12px;border-radius:4px;"></span>
-            <span class="mock-dot" style="background:#10B981;width:12px;height:12px;border-radius:4px;"></span>
-            <span class="mock-dot" style="background:#7C3AED;width:12px;height:12px;border-radius:4px;"></span>
+        <div class="m-sb" style="background:linear-gradient(180deg,#0B1224,#111C34);">
+          <div style="height:8px;border-radius:4px;background:#FF8A3D;"></div>
+          <div style="height:6px;border-radius:3px;background:rgba(96,165,250,0.5);"></div>
+          <div style="height:6px;border-radius:3px;background:rgba(52,211,153,0.5);"></div>
+          <div style="height:6px;border-radius:3px;background:rgba(167,139,250,0.5);"></div>
+        </div>
+        <div class="m-main">
+          <div class="m-hero" style="background:linear-gradient(120deg,#0B1224,#172554,#F26522);"></div>
+          <div class="m-4">
+            <div class="m-box" style="background:#fff;border-top:3px solid #F26522;"></div>
+            <div class="m-box" style="background:#fff;border-top:3px solid #10B981;"></div>
+            <div class="m-box" style="background:#fff;border-top:3px solid #2563EB;"></div>
+            <div class="m-box" style="background:#fff;border-top:3px solid #F59E0B;"></div>
           </div>
-          <div class="mock-sheet">
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
-              <div style="height:26px;border-radius:7px;background:#FFF1EB;"></div>
-              <div style="height:26px;border-radius:7px;background:#EFF6FF;"></div>
-              <div style="height:26px;border-radius:7px;background:#ECFDF5;"></div>
-              <div style="height:26px;border-radius:7px;background:#F5F3FF;"></div>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;flex:1;">
-              <div style="border-radius:9px;background:#F8FAFC;border:1px solid #E2E8F0;"></div>
-              <div style="border-radius:9px;background:#F8FAFC;border:1px solid #E2E8F0;"></div>
-              <div style="border-radius:9px;background:#F8FAFC;border:1px solid #E2E8F0;"></div>
-            </div>
+          <div class="m-2col">
+            <div class="m-pnl" style="background:#fff;border-top:3px solid #1E3A8A;"></div>
+            <div class="m-pnl" style="background:#fff;border-top:3px solid #1E3A8A;"></div>
           </div>
         </div>
       </div>
-      <div class="card-body">
+      <div class="body">
         <div class="tag-row">
-          <span class="num-badge" style="background:#EEF2FF;color:#4F46E5;">CONCEPT 02</span>
-          <span style="font-size:12px;font-weight:700;color:#64748B;">Monday / Notion Style</span>
+          <span class="num-badge" style="background:#EFF6FF;color:#1D4ED8;">VERSION 02</span>
+          <span style="font-size:12px;font-weight:700;color:#64748B;">Corporate Command</span>
         </div>
-        <h2 class="card-h2">Aurora Rail Workspace</h2>
-        <p class="card-p">Vibrant pastel-aurora workspace featuring a colorful icon rail, floating rounded white canvas, and live Kanban formation pipeline.</p>
-        <ul class="feat-list">
-          <li>✓ Colorful Dual-Rail Icon Navigation</li>
-          <li>✓ Live Visual Kanban Formation Board</li>
-          <li>✓ Soft Pastel Tiles & Modern Micro-UI</li>
+        <h2>Executive Royal Navy</h2>
+        <p class="desc">Bold dark navy header &amp; sidebar paired with bright colorful SVG icons and top-accented white executive dashboard cards.</p>
+        <ul class="feats">
+          <li>✓ Exact Live Widget &amp; Menu Positions</li>
+          <li>✓ High-Contrast Navy + Glowing Icons</li>
+          <li>✓ Top-Bordered Executive Stat Cards</li>
         </ul>
-        <div class="open-btn btn-2">Open Design 2 Live →</div>
+        <div class="open-btn" style="background:linear-gradient(135deg,#0F172A,#1D4ED8);">Open Version 2 Live →</div>
       </div>
     </a>
 
-    <!-- DESIGN 3 -->
-    <a href="design-3.html" class="concept-card">
+    <!-- VERSION 3 -->
+    <a href="design-3.html" class="card">
       <div class="thumb t3">
-        <div class="mock-dark-wrap">
-          <div class="mock-glass" style="display:flex;flex-direction:column;gap:7px;">
-            <div style="height:10px;border-radius:4px;background:rgba(242,101,34,0.65);"></div>
-            <div style="height:8px;border-radius:4px;background:rgba(59,130,246,0.45);"></div>
-            <div style="height:8px;border-radius:4px;background:rgba(16,185,129,0.45);"></div>
-            <div style="height:8px;border-radius:4px;background:rgba(139,92,246,0.45);"></div>
+        <div class="m-sb" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);">
+          <div style="height:8px;border-radius:4px;background:#F26522;"></div>
+          <div style="height:6px;border-radius:3px;background:rgba(56,189,248,0.5);"></div>
+          <div style="height:6px;border-radius:3px;background:rgba(52,211,153,0.5);"></div>
+          <div style="height:6px;border-radius:3px;background:rgba(167,139,250,0.5);"></div>
+        </div>
+        <div class="m-main">
+          <div class="m-hero" style="background:linear-gradient(120deg,rgba(242,101,34,0.3),rgba(37,99,235,0.3));border:1px solid rgba(255,255,255,0.14);"></div>
+          <div class="m-4">
+            <div class="m-box" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);"></div>
+            <div class="m-box" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);"></div>
+            <div class="m-box" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);"></div>
+            <div class="m-box" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);"></div>
           </div>
-          <div class="mock-glass" style="display:flex;flex-direction:column;gap:8px;">
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
-              <div style="height:30px;border-radius:7px;background:rgba(255,255,255,0.08);"></div>
-              <div style="height:30px;border-radius:7px;background:rgba(255,255,255,0.08);"></div>
-              <div style="height:30px;border-radius:7px;background:rgba(255,255,255,0.08);"></div>
-            </div>
-            <div style="flex:1;border-radius:9px;background:linear-gradient(180deg,rgba(242,101,34,0.28),transparent);"></div>
+          <div class="m-2col">
+            <div class="m-pnl" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);"></div>
+            <div class="m-pnl" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);"></div>
           </div>
-          <div class="mock-glass"></div>
         </div>
       </div>
-      <div class="card-body">
+      <div class="body">
         <div class="tag-row">
-          <span class="num-badge" style="background:#EFF6FF;color:#1D4ED8;">CONCEPT 03</span>
-          <span style="font-size:12px;font-weight:700;color:#64748B;">Luxury Fintech Dark</span>
+          <span class="num-badge" style="background:#F5F3FF;color:#7C3AED;">VERSION 03</span>
+          <span style="font-size:12px;font-weight:700;color:#64748B;">Luxury Dark Glass</span>
         </div>
-        <h2 class="card-h2">Obsidian Glass Command</h2>
-        <p class="card-p">High-tech frosted-glass dark mode with detached floating sidebar, glowing jewel icons, smooth revenue curve, and live right-side pulse.</p>
-        <ul class="feat-list">
-          <li>✓ Floating Detached Glass Sidebar</li>
-          <li>✓ Glowing Jewel-Toned Colorful Icons</li>
-          <li>✓ 3-Column Command Center + Live Pulse</li>
+        <h2>Obsidian Glass Pro</h2>
+        <p class="desc">Ultra-modern frosted glass dark mode with jewel-toned glowing SVG icons, subtle ambient gradients, and crystal-clear contrast.</p>
+        <ul class="feats">
+          <li>✓ Exact Live Widget &amp; Menu Positions</li>
+          <li>✓ Frosted Glassmorphism + Neon Accents</li>
+          <li>✓ Jewel-Toned Colorful Vector Icons</li>
         </ul>
-        <div class="open-btn btn-3">Open Design 3 Live →</div>
+        <div class="open-btn" style="background:linear-gradient(135deg,#4F46E5,#7C3AED);">Open Version 3 Live →</div>
       </div>
     </a>
   </section>
-
-  <!-- Bonus Link to Classic 4-Theme Switcher -->
-  <div class="bonus-bar">
-    <div>
-      <strong style="font-size:15px;">Bonus Concept 04 — Classic Upgraded Sidebar (with 4 Live Color Themes)</strong>
-      <div style="font-size:13px;color:#64748B;margin-top:2px;">Prefer the familiar left-sidebar CRM layout upgraded with Vibrant Light, Executive Navy, Royal Blue, or Dark Pro?</div>
-    </div>
-    <a href="classic.html" class="bonus-link">Open Classic 4-Theme Demo →</a>
-  </div>
 </div>
 </body>
 </html>
