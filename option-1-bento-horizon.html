@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Global Business — Bento Horizon CRM</title>
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        alabaster: '#F4F6FA',
+                        obsidian: '#0B0F19',
+                        brandBlue: '#2563EB',
+                        brandOrange: '#F97316',
+                        brandEmerald: '#10B981',
+                        brandViolet: '#8B5CF6',
+                        brandRose: '#F43F5E',
+                    },
+                    borderRadius: {
+                        'bento': '24px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.35); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.55); }
+
+        .bento-card {
+            border-radius: 24px;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        html:not(.dark) .bento-card {
+            background: #FFFFFF;
+            border: 1px solid rgba(226, 232, 240, 0.85);
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 1px 3px 0 rgba(15, 23, 42, 0.02);
+        }
+        html:not(.dark) .bento-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px -8px rgba(37, 99, 235, 0.09), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+            border-color: rgba(37, 99, 235, 0.25);
+        }
+        .dark .bento-card {
+            background: #131A2A;
+            border: 1px solid rgba(51, 65, 85, 0.55);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.45);
+        }
+        .dark .bento-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .spotlight-border {
+            position: relative;
+            border-radius: 24px;
+            padding: 2px;
+            background: linear-gradient(135deg, #2563EB 0%, #6366F1 45%, #F97316 100%);
+            box-shadow: 0 16px 36px -12px rgba(37, 99, 235, 0.22), 0 8px 20px -10px rgba(249, 115, 22, 0.18);
+        }
+        .spotlight-inner {
+            border-radius: 22px;
+        }
+
+        .macos-dock {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .dock-item {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .dock-item:hover {
+            transform: translateY(-6px) scale(1.12);
+        }
+
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translateY(8px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-pop {
+            animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="bg-alabaster text-slate-800 dark:bg-obsidian dark:text-slate-100 font-sans antialiased selection:bg-brandBlue selection:text-white overflow-x-hidden min-h-screen">
+
+    <div id="toast-container" class="fixed top-24 right-5 z-[60] flex flex-col gap-2 pointer-events-none"></div>
+
+    <header class="sticky top-0 z-40 px-3 sm:px-6 pt-3.5 pb-2">
+        <div class="max-w-[1480px] mx-auto bg-white/85 dark:bg-[#131A2A]/85 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/90 rounded-[22px] px-4 py-2.5 shadow-[0_8px_30px_-8px_rgba(15,23,42,0.08)] flex items-center justify-between gap-3">
+            <button onclick="switchView('dashboard')" class="flex items-center gap-2.5 shrink-0 group focus:outline-none">
+                <div class="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+                    <svg class="w-7 h-7" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="15" stroke="#2563EB" stroke-width="4.5" stroke-dasharray="68 28" stroke-linecap="round"/>
+                        <path d="M20 7.5C26.9036 7.5 32.5 13.0964 32.5 20H21V24.2H27.8" stroke="#F97316" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="20" cy="20" r="2.8" fill="#2563EB"/>
+                    </svg>
+                </div>
+                <div class="text-left leading-none">
+                    <div class="font-display font-extrabold text-base text-slate-900 dark:text-white tracking-tight">Get Global</div>
+                    <div class="text-[10px] font-extrabold tracking-[0.18em] uppercase text-brandOrange mt-0.5">BUSINESS</div>
+                </div>
+            </button>
+
+            <nav class="hidden lg:flex items-center gap-1.5 bg-slate-100/80 dark:bg-slate-900/70 p-1.5 rounded-2xl border border-slate-200/60 dark:border-slate-800">
+                <button onclick="switchView('dashboard')" id="topnav-dashboard" class="topnav-pill flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-brandBlue dark:text-blue-400 shadow-xs transition">
+                    <span class="w-5 h-5 rounded-lg bg-blue-500/15 text-brandBlue flex items-center justify-center">
+                        <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+                    </span>
+                    Operations Hub
+                </button>
+
+                <button onclick="switchView('clients')" id="topnav-clients" class="topnav-pill flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-white/70 dark:hover:bg-slate-800/70 transition">
+                    <span class="w-5 h-5 rounded-lg bg-orange-500/15 text-brandOrange flex items-center justify-center">
+                        <i data-lucide="building-2" class="w-3.5 h-3.5"></i>
+                    </span>
+                    Clients & Firms
+                    <span id="topnav-client-count" class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-orange-500/15 text-brandOrange">4</span>
+                </button>
+
+                <button onclick="jumpToSection('financial-hub-card', 'Billing & Invoices')" class="topnav-pill flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-white/70 dark:hover:bg-slate-800/70 transition">
+                    <span class="w-5 h-5 rounded-lg bg-emerald-500/15 text-brandEmerald flex items-center justify-center">
+                        <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
+                    </span>
+                    Billing & Invoices
+                </button>
+
+                <button onclick="jumpToSection('analytics-card', 'Service Orders')" class="topnav-pill flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-white/70 dark:hover:bg-slate-800/70 transition">
+                    <span class="w-5 h-5 rounded-lg bg-violet-500/15 text-brandViolet flex items-center justify-center">
+                        <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                    </span>
+                    Service Orders
+                </button>
+
+                <button onclick="jumpToSection('tasks-card', 'Tasks & SLA')" class="topnav-pill flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-white/70 dark:hover:bg-slate-800/70 transition">
+                    <span class="w-5 h-5 rounded-lg bg-rose-500/15 text-brandRose flex items-center justify-center">
+                        <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                    </span>
+                    Tasks & SLA
+                </button>
+
+                <div class="relative">
+                    <button id="modules-btn" onclick="toggleModulesPopover(event)" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-brandBlue to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-sm shadow-blue-500/25 transition">
+                        <i data-lucide="grid-2x2" class="w-3.5 h-3.5"></i>
+                        All Modules
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-80"></i>
+                    </button>
+
+                    <div id="modules-popover" class="hidden animate-pop absolute right-0 mt-3 w-[440px] max-w-[92vw] bg-white dark:bg-[#131A2A] border border-slate-200 dark:border-slate-700/80 rounded-3xl shadow-2xl p-5 z-50">
+                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-slate-800">
+                            <div>
+                                <h4 class="font-display font-bold text-sm text-slate-900 dark:text-white">CRM App Launcher</h4>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400">All 10 extended Get Global Business modules</p>
+                            </div>
+                            <span class="px-2 py-0.5 rounded-full bg-blue-500/10 text-brandBlue text-[10px] font-bold">Horizon Suite</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-2 gap-2.5">
+                            <button onclick="openModule('Compliance Plans')" class="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-200/80 dark:hover:border-slate-700 transition text-left group">
+                                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0"><i data-lucide="shield-check" class="w-4 h-4"></i></span>
+                                <div><div class="text-xs font-bold text-slate-800 dark:text-slate-100">Compliance Plans</div><div class="text-[10px] text-slate-400">BOI & Annual Filings</div></div>
+                            </button>
+                            <button onclick="openModule('Filing Fees')" class="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-200/80 dark:hover:border-slate-700 transition text-left group">
+                                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0"><i data-lucide="landmark" class="w-4 h-4"></i></span>
+                                <div><div class="text-xs font-bold text-slate-800 dark:text-slate-100">Filing Fees</div><div class="text-[10px] text-slate-400">State & IRS Ledger</div></div>
+                            </button>
+                            <button onclick="openModule('Agreements')" class="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-200/80 dark:hover:border-slate-700 transition text-left group">
+                                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0"><i data-lucide="file-signature" class="w-4 h-4"></i></span>
+                                <div><div class="text-xs font-bold text-slate-800 dark:text-slate-100">Agreements</div><div class="text-[10px] text-slate-400">Contracts & E-Sign</div></div>
+                            </button>
+                            <button onclick="openModule('Support Desk')" class="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-200/80 dark:hover:border-slate-700 transition text-left group">
+                                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0"><i data-lucide="headset" class="w-4 h-4"></i></span>
+                                <div><div class="text-xs font-bold text-slate-800 dark:text-slate-100">Support Desk</div><div class="text-[10px] text-slate-400">1 Ticket Open</div></div>
+                            </button>
+                            <button onclick="openModule('Business Leads')" class="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-200/80 dark:hover:border-slate-700 transition text-left group">
+                                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0"><i data-lucide="target" class="w-4 h-4"></i></span>
+                                <div><div class="text-xs font-bold text-slate-800 dark:text-slate-100">Business Leads</div><div class="text-[10px] text-slate-400">CRM Sales Funnel</div></div>
+                            </button>
+                            <button onclick="openModule('Onboarding')" class="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-200/80 dark:hover:border-slate-700 transition text-left group">
+                                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0"><i data-lucide="rocket" class="w-4 h-4"></i></span>
+                                <div><div class="text-xs font-bold text-slate-800 dark:text-slate-100">Onboarding</div><div class="text-[10px] text-slate-400">Client KYC & Kits</div></div>
+                            </button>
+                            <button onclick="openModule('SOP Guides')" class="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-200/80 dark:hover:border-slate-700 transition text-left group">
+                                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0"><i data-lucide="book-open" class="w-4 h-4"></i></span>
+                                <div><div class="text-xs font-bold text-slate-800 dark:text-slate-100">SOP Guides</div><div class="text-[10px] text-slate-400">Team Playbooks</div></div>
+                            </button>
+                            <button onclick="openModule('Utilities')" class="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-200/80 dark:hover:border-slate-700 transition text-left group">
+                                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0"><i data-lucide="wrench" class="w-4 h-4"></i></span>
+                                <div><div class="text-xs font-bold text-slate-800 dark:text-slate-100">Utilities</div><div class="text-[10px] text-slate-400">Logs & Exports</div></div>
+                            </button>
+                            <button onclick="openModule('KPI & Analytics')" class="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-200/80 dark:hover:border-slate-700 transition text-left group">
+                                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-lime-500 to-emerald-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0"><i data-lucide="bar-chart-3" class="w-4 h-4"></i></span>
+                                <div><div class="text-xs font-bold text-slate-800 dark:text-slate-100">KPI & Analytics</div><div class="text-[10px] text-slate-400">Executive Metrics</div></div>
+                            </button>
+                            <button onclick="openModule('Setup')" class="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-200/80 dark:hover:border-slate-700 transition text-left group">
+                                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0"><i data-lucide="settings" class="w-4 h-4"></i></span>
+                                <div><div class="text-xs font-bold text-slate-800 dark:text-slate-100">Setup</div><div class="text-[10px] text-slate-400">Roles & Settings</div></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <a href="index.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold shadow-xs hover:opacity-90 transition">← All Options</a>
+                <div class="flex lg:hidden items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+                    <button onclick="switchView('dashboard')" id="mob-nav-dash" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-white dark:bg-slate-700 text-brandBlue shadow-2xs">Hub</button>
+                    <button onclick="switchView('clients')" id="mob-nav-clients" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-500 dark:text-slate-300">Clients</button>
+                    <button onclick="toggleModulesPopover(event)" class="px-2 py-1.5 rounded-lg text-[11px] font-bold text-brandOrange" title="All Modules"><i data-lucide="grid-2x2" class="w-4 h-4"></i></button>
+                </div>
+                <button onclick="showToast('1 Invoice awaiting payment ($990) • 1 Open Ticket')" class="relative p-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-brandBlue transition">
+                    <i data-lucide="bell" class="w-4 h-4"></i>
+                    <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-brandOrange ring-2 ring-white dark:ring-slate-800"></span>
+                </button>
+                <div class="hidden sm:flex items-center gap-2.5 pl-1.5 pr-3 py-1 rounded-2xl bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brandBlue to-brandOrange text-white font-display font-bold text-xs flex items-center justify-center shadow-xs">GG</div>
+                    <div class="leading-tight">
+                        <div class="text-xs font-bold text-slate-900 dark:text-white">Get Global Admin</div>
+                        <div class="text-[10px] font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active Admin</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="view-dashboard" class="max-w-[1480px] mx-auto px-3 sm:px-6 pt-4 pb-32 space-y-6">
+        <section class="grid grid-cols-1 xl:grid-cols-12 gap-5">
+            <div class="xl:col-span-5 spotlight-border flex">
+                <div class="spotlight-inner bg-white dark:bg-[#131A2A] w-full p-6 flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-blue-500/10 blur-2xl pointer-events-none"></div>
+                    <div class="absolute -left-10 -bottom-10 w-44 h-44 rounded-full bg-orange-500/10 blur-2xl pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/10 to-orange-500/10 border border-blue-500/20 text-[11px] font-bold text-brandBlue dark:text-blue-400 mb-3">
+                            <span class="w-2 h-2 rounded-full bg-brandOrange animate-pulse"></span>
+                            BENTO HORIZON • OPERATIONS HUB
+                        </div>
+                        <h1 class="font-display text-2xl sm:text-[26px] font-extrabold text-slate-900 dark:text-white tracking-tight leading-snug">
+                            Welcome back,<br>
+                            <span class="bg-gradient-to-r from-brandBlue via-indigo-600 to-brandOrange bg-clip-text text-transparent">Get Global Admin</span>
+                        </h1>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 flex items-center gap-1.5 font-medium">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5 text-brandOrange"></i>
+                            Tuesday, 24 November 2026
+                        </p>
+                    </div>
+                    <div class="relative z-10 flex flex-wrap items-center gap-2 mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+                        <button onclick="openModal('customer')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-brandOrange to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-bold shadow-md shadow-orange-500/20 transition active:scale-95">
+                            <i data-lucide="map" class="w-3.5 h-3.5"></i> Proposal Roadmap
+                        </button>
+                        <button onclick="jumpToSection('analytics-card', 'Service Orders')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 dark:bg-blue-500/15 hover:bg-blue-100 dark:hover:bg-blue-500/25 text-brandBlue dark:text-blue-300 text-xs font-bold transition">
+                            <i data-lucide="layers" class="w-3.5 h-3.5"></i> Service Orders
+                        </button>
+                        <button onclick="jumpToSection('tasks-card', 'Tasks & SLA')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-violet-50 dark:bg-violet-500/15 hover:bg-violet-100 dark:hover:bg-violet-500/25 text-brandViolet dark:text-violet-300 text-xs font-bold transition">
+                            <i data-lucide="check-square" class="w-3.5 h-3.5"></i> Tasks & SLA
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="xl:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bento-card p-5 flex items-center justify-between gap-4">
+                    <div>
+                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brandOrange to-amber-400 text-white flex items-center justify-center shadow-lg shadow-orange-500/25 mb-3"><i data-lucide="file-clock" class="w-5 h-5"></i></div>
+                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Invoices Awaiting Payment</p>
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <span class="font-display text-2xl font-extrabold text-slate-900 dark:text-white">1 <span class="text-sm font-semibold text-slate-400">/ 2</span></span>
+                            <span class="px-2 py-0.5 rounded-full bg-orange-500/15 text-brandOrange text-[10px] font-bold">$990 Due</span>
+                        </div>
+                    </div>
+                    <div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
+                        <svg class="w-16 h-16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-width="6" class="text-slate-100 dark:text-slate-800"/><circle cx="32" cy="32" r="26" fill="none" stroke="#F97316" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.36" stroke-dashoffset="81.68" class="progress-ring-circle"/></svg>
+                        <span class="absolute text-xs font-extrabold text-brandOrange">50%</span>
+                    </div>
+                </div>
+
+                <div class="bento-card p-5 flex items-center justify-between gap-4">
+                    <div>
+                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-400 text-white flex items-center justify-center shadow-lg shadow-emerald-500/25 mb-3"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
+                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Converted Leads</p>
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <span class="font-display text-2xl font-extrabold text-slate-900 dark:text-white">1 <span class="text-sm font-semibold text-slate-400">/ 1</span></span>
+                            <span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-brandEmerald text-[10px] font-bold">Target Hit</span>
+                        </div>
+                    </div>
+                    <div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
+                        <svg class="w-16 h-16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-width="6" class="text-slate-100 dark:text-slate-800"/><circle cx="32" cy="32" r="26" fill="none" stroke="#10B981" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.36" stroke-dashoffset="0" class="progress-ring-circle"/></svg>
+                        <span class="absolute text-xs font-extrabold text-brandEmerald">100%</span>
+                    </div>
+                </div>
+
+                <div class="bento-card p-5 flex items-center justify-between gap-4">
+                    <div>
+                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brandBlue to-cyan-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/25 mb-3"><i data-lucide="briefcase" class="w-5 h-5"></i></div>
+                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Service Orders In Progress</p>
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <span class="font-display text-2xl font-extrabold text-slate-900 dark:text-white">4 <span class="text-sm font-semibold text-slate-400">/ 4</span></span>
+                            <span class="px-2 py-0.5 rounded-full bg-blue-500/15 text-brandBlue dark:text-blue-400 text-[10px] font-bold">All Active</span>
+                        </div>
+                    </div>
+                    <div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
+                        <svg class="w-16 h-16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-width="6" class="text-slate-100 dark:text-slate-800"/><circle cx="32" cy="32" r="26" fill="none" stroke="#2563EB" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.36" stroke-dashoffset="0" class="progress-ring-circle"/></svg>
+                        <span class="absolute text-xs font-extrabold text-brandBlue dark:text-blue-400">100%</span>
+                    </div>
+                </div>
+
+                <div class="bento-card p-5 flex items-center justify-between gap-4">
+                    <div>
+                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brandViolet to-fuchsia-500 text-white flex items-center justify-center shadow-lg shadow-violet-500/25 mb-3"><i data-lucide="list-todo" class="w-5 h-5"></i></div>
+                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tasks Not Finished</p>
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <span class="font-display text-2xl font-extrabold text-slate-900 dark:text-white">11 <span class="text-sm font-semibold text-slate-400">/ 12</span></span>
+                            <span class="px-2 py-0.5 rounded-full bg-violet-500/15 text-brandViolet dark:text-violet-400 text-[10px] font-bold">In Progress</span>
+                        </div>
+                    </div>
+                    <div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
+                        <svg class="w-16 h-16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-width="6" class="text-slate-100 dark:text-slate-800"/><circle cx="32" cy="32" r="26" fill="none" stroke="#8B5CF6" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.36" stroke-dashoffset="13.07" class="progress-ring-circle"/></svg>
+                        <span class="absolute text-xs font-extrabold text-brandViolet dark:text-violet-400">92%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-12 gap-5">
+            <div id="financial-hub-card" class="xl:col-span-7 bento-card p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-brandBlue to-indigo-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20"><i data-lucide="wallet" class="w-5 h-5"></i></div>
+                            <div>
+                                <h2 class="font-display font-bold text-base text-slate-900 dark:text-white">Financial Hub</h2>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Unified billing pipeline & status breakdown</p>
+                            </div>
+                        </div>
+                        <div class="inline-flex p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700 self-start sm:self-auto">
+                            <button onclick="switchFinancialTab('invoice', this)" class="fin-tab px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 text-brandBlue shadow-2xs transition">Invoice Overview</button>
+                            <button onclick="switchFinancialTab('estimate', this)" class="fin-tab px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Estimate Overview</button>
+                            <button onclick="switchFinancialTab('proposal', this)" class="fin-tab px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Proposal Overview</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
+                        <div class="p-3.5 rounded-2xl bg-orange-50/80 dark:bg-orange-500/10 border border-orange-200/60 dark:border-orange-500/20 flex items-center justify-between">
+                            <div><div class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Outstanding Invoices</div><div class="font-display text-lg font-extrabold text-brandOrange mt-0.5">$990.00</div></div>
+                            <span class="w-8 h-8 rounded-xl bg-brandOrange/15 text-brandOrange flex items-center justify-center"><i data-lucide="clock" class="w-4 h-4"></i></span>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-rose-50/80 dark:bg-rose-500/10 border border-rose-200/60 dark:border-rose-500/20 flex items-center justify-between">
+                            <div><div class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Past Due</div><div class="font-display text-lg font-extrabold text-brandRose mt-0.5">$0.00</div></div>
+                            <span class="w-8 h-8 rounded-xl bg-brandRose/15 text-brandRose flex items-center justify-center"><i data-lucide="alert-circle" class="w-4 h-4"></i></span>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-emerald-50/80 dark:bg-emerald-500/10 border border-emerald-200/60 dark:border-emerald-500/20 flex items-center justify-between">
+                            <div><div class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Paid Invoices</div><div class="font-display text-lg font-extrabold text-brandEmerald mt-0.5">$0.00</div></div>
+                            <span class="w-8 h-8 rounded-xl bg-brandEmerald/15 text-brandEmerald flex items-center justify-center"><i data-lucide="check-circle-2" class="w-4 h-4"></i></span>
+                        </div>
+                    </div>
+
+                    <div id="financial-bars-container" class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mt-6"></div>
+                </div>
+            </div>
+
+            <div id="analytics-card" class="xl:col-span-5 bento-card p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between gap-2 mb-4">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brandViolet to-indigo-600 text-white flex items-center justify-center shadow-md shadow-violet-500/20"><i data-lucide="pie-chart" class="w-5 h-5"></i></div>
+                            <div>
+                                <h2 class="font-display font-bold text-base text-slate-900 dark:text-white">Live Analytics</h2>
+                                <p id="chart-subtitle" class="text-xs text-slate-500 dark:text-slate-400">Lead conversion breakdown</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-brandEmerald text-[10px] font-bold">Real-Time</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700 mb-5">
+                        <button onclick="switchChartTab('leads', this)" class="chart-tab px-2 py-1.5 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-900 text-brandBlue shadow-2xs transition">Leads Overview</button>
+                        <button onclick="switchChartTab('projects', this)" class="chart-tab px-2 py-1.5 rounded-xl text-[11px] font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Project Status</button>
+                        <button onclick="switchChartTab('tickets', this)" class="chart-tab px-2 py-1.5 rounded-xl text-[11px] font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Tickets Status</button>
+                        <button onclick="switchChartTab('payments', this)" class="chart-tab px-2 py-1.5 rounded-xl text-[11px] font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Payments</button>
+                    </div>
+                </div>
+                <div class="h-56 w-full relative flex items-center justify-center"><canvas id="horizonMainChart"></canvas></div>
+                <div id="chart-legend-strip" class="mt-4 pt-3.5 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-center gap-4 text-xs font-semibold"></div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-12 gap-5">
+            <div id="tasks-card" class="xl:col-span-7 bento-card p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brandRose to-orange-500 text-white flex items-center justify-center shadow-md shadow-rose-500/20"><i data-lucide="check-circle-2" class="w-5 h-5"></i></div>
+                        <div>
+                            <h2 class="font-display font-bold text-base text-slate-900 dark:text-white">My Tasks & SLA</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Click any status pill to cycle progress live</p>
+                        </div>
+                    </div>
+                    <div class="relative w-full sm:w-56">
+                        <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                        <input id="task-search-input" onkeyup="renderTasks()" type="text" placeholder="Search tasks..." class="w-full pl-8 pr-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-brandBlue/40">
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-2 mt-4 mb-4">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <button onclick="switchTaskCategory('tasks', this)" class="task-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-brandBlue text-white shadow-xs transition">My Tasks</button>
+                        <button onclick="switchTaskCategory('projects', this)" class="task-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">My Projects</button>
+                        <button onclick="switchTaskCategory('reminders', this)" class="task-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Reminders</button>
+                        <button onclick="switchTaskCategory('announcements', this)" class="task-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Announcements</button>
+                    </div>
+                    <button onclick="openModal('task')" class="text-xs font-bold text-brandOrange hover:underline flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Task</button>
+                </div>
+                <div id="tasks-list-container" class="space-y-3"></div>
+            </div>
+
+            <div class="xl:col-span-5 bento-card p-6 flex flex-col justify-between gap-6">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-9 h-9 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center shadow-sm"><i data-lucide="list-checks" class="w-4 h-4"></i></span>
+                            <h2 class="font-display font-bold text-base text-slate-900 dark:text-white">Quick To-Do</h2>
+                        </div>
+                        <span id="todo-counter" class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-brandEmerald text-[11px] font-bold">2 Open</span>
+                    </div>
+                    <form onsubmit="addTodo(event)" class="flex gap-2 mb-3">
+                        <input id="new-todo-input" type="text" placeholder="Add a quick reminder or action item..." class="flex-1 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-brandBlue/40">
+                        <button type="submit" class="px-4 py-2 rounded-xl bg-brandBlue hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition">Add</button>
+                    </form>
+                    <div id="todo-items-container" class="space-y-2 max-h-36 overflow-y-auto pr-1"></div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2"><i data-lucide="calendar-days" class="w-4 h-4 text-brandOrange"></i><h3 class="font-display font-bold text-sm text-slate-900 dark:text-white">November 2026</h3></div>
+                        <span id="calendar-selected-note" class="text-[11px] font-semibold text-brandBlue dark:text-blue-400">Today: Nov 24</span>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 mb-1.5"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+                    <div id="mini-calendar-grid" class="grid grid-cols-7 gap-1 text-center text-xs font-semibold"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <main id="view-clients" class="hidden max-w-[1480px] mx-auto px-3 sm:px-6 pt-4 pb-32 space-y-6">
+        <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+            <div class="bento-card p-4 flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brandBlue to-indigo-500 text-white flex items-center justify-center shadow-sm shrink-0"><i data-lucide="building-2" class="w-4 h-4"></i></div><div><div id="stat-total" class="font-display text-xl font-extrabold text-slate-900 dark:text-white">4</div><div class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight">Total Customers</div></div></div>
+            <div class="bento-card p-4 flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center shadow-sm shrink-0"><i data-lucide="check-circle" class="w-4 h-4"></i></div><div><div id="stat-active" class="font-display text-xl font-extrabold text-brandEmerald">4</div><div class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight">Active Customers</div></div></div>
+            <div class="bento-card p-4 flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-500 text-white flex items-center justify-center shadow-sm shrink-0"><i data-lucide="ban" class="w-4 h-4"></i></div><div><div id="stat-inactive" class="font-display text-xl font-extrabold text-brandRose">0</div><div class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight">Inactive Customers</div></div></div>
+            <div class="bento-card p-4 flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white flex items-center justify-center shadow-sm shrink-0"><i data-lucide="user-check" class="w-4 h-4"></i></div><div><div id="stat-active-contacts" class="font-display text-xl font-extrabold text-sky-600 dark:text-sky-400">1</div><div class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight">Active Contacts</div></div></div>
+            <div class="bento-card p-4 flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white flex items-center justify-center shadow-sm shrink-0"><i data-lucide="user-x" class="w-4 h-4"></i></div><div><div class="font-display text-xl font-extrabold text-amber-500">0</div><div class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight">Inactive Contacts</div></div></div>
+            <div class="bento-card p-4 flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brandViolet to-purple-600 text-white flex items-center justify-center shadow-sm shrink-0"><i data-lucide="clock" class="w-4 h-4"></i></div><div><div class="font-display text-xl font-extrabold text-brandViolet">0</div><div class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight">Logged In Today</div></div></div>
+        </section>
+
+        <section class="bento-card p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex flex-wrap items-center gap-3">
+                <button onclick="openModal('customer')" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brandBlue to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-blue-500/25 transition active:scale-95"><i data-lucide="plus" class="w-4 h-4"></i> New Customer</button>
+                <div class="relative w-full sm:w-72">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                    <input id="client-search-input" onkeyup="renderClients()" type="text" placeholder="Search company, contact, phone..." class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brandBlue/40">
+                </div>
+            </div>
+            <div class="inline-flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700 self-start md:self-auto">
+                <button onclick="setClientDisplayMode('cards')" id="mode-btn-cards" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 text-brandBlue shadow-2xs transition"><i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> Visual Card Grid</button>
+                <button onclick="setClientDisplayMode('table')" id="mode-btn-table" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"><i data-lucide="table-2" class="w-3.5 h-3.5"></i> Classic Data Table</button>
+            </div>
+        </section>
+
+        <section id="clients-card-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5"></section>
+        <section id="clients-table-wrapper" class="hidden bento-card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50/90 dark:bg-slate-800/70 border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                            <th class="py-4 pl-6">#</th><th class="py-4">Company</th><th class="py-4">Primary Contact</th><th class="py-4">Primary Email</th><th class="py-4">Phone</th><th class="py-4">Active</th><th class="py-4 pr-6">Date Created</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clients-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/70 text-xs sm:text-sm"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 px-3">
+        <div class="macos-dock flex items-center gap-2 sm:gap-3 px-3.5 py-2.5 rounded-[24px] bg-white/85 dark:bg-[#131A2A]/90 border border-slate-200/90 dark:border-slate-700/80 shadow-[0_18px_40px_-10px_rgba(15,23,42,0.22)]">
+            <button onclick="openModal('customer')" title="+ New Client" class="dock-item group relative w-11 h-11 rounded-2xl bg-gradient-to-br from-brandBlue to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30"><i data-lucide="user-plus" class="w-5 h-5"></i></button>
+            <button onclick="openModal('task')" title="+ New Task" class="dock-item group relative w-11 h-11 rounded-2xl bg-gradient-to-br from-brandOrange to-amber-500 text-white flex items-center justify-center shadow-lg shadow-orange-500/30"><i data-lucide="check-square" class="w-5 h-5"></i></button>
+            <div class="w-px h-7 bg-slate-200 dark:bg-slate-700 mx-0.5"></div>
+            <button onclick="openModal('search')" title="Quick Search (Ctrl+K)" class="dock-item group relative w-11 h-11 rounded-2xl bg-gradient-to-br from-brandViolet to-purple-600 text-white flex items-center justify-center shadow-lg shadow-violet-500/30"><i data-lucide="search" class="w-5 h-5"></i></button>
+            <button onclick="openModal('calendar')" title="Calendar Popup" class="dock-item group relative w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/30"><i data-lucide="calendar" class="w-5 h-5"></i></button>
+            <div class="w-px h-7 bg-slate-200 dark:bg-slate-700 mx-0.5"></div>
+            <button onclick="toggleTheme()" title="Toggle Dark/Light Theme" class="dock-item group relative w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-400 border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm"><i data-lucide="moon" class="w-5 h-5 block dark:hidden text-brandBlue"></i><i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i></button>
+        </div>
+    </div>
+
+    <div id="modal-customer" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+        <div class="animate-pop bg-white dark:bg-[#131A2A] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brandBlue to-indigo-600 text-white flex items-center justify-center shadow-md"><i data-lucide="building-2" class="w-5 h-5"></i></div><div><h3 class="font-display font-bold text-base text-slate-900 dark:text-white">New Customer</h3><p class="text-xs text-slate-500">Add a firm to Clients & Firms directory</p></div></div>
+                <button onclick="closeAllModals()" class="p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <form id="form-new-customer" onsubmit="handleAddCustomer(event)" class="mt-4 space-y-3.5">
+                <div><label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Company Name *</label><input id="input-cust-company" type="text" required placeholder="e.g. Pacific Crest Ventures LLC" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-brandBlue"></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Primary Contact</label><input id="input-cust-contact" type="text" placeholder="e.g. Nadia Rahman" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-brandBlue"></div>
+                    <div><label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Phone</label><input id="input-cust-phone" type="text" placeholder="+1 307-555-0199" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-brandBlue"></div>
+                </div>
+                <div><label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Primary Email</label><input id="input-cust-email" type="email" placeholder="contact@company.com" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-brandBlue"></div>
+                <div class="flex justify-end gap-2 pt-3"><button type="button" onclick="closeAllModals()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button><button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-brandBlue to-indigo-600 shadow-md">Add Customer</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-task" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+        <div class="animate-pop bg-white dark:bg-[#131A2A] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brandOrange to-amber-500 text-white flex items-center justify-center shadow-md"><i data-lucide="check-square" class="w-5 h-5"></i></div><div><h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Create New Task</h3><p class="text-xs text-slate-500">Assign to Tasks & SLA board</p></div></div>
+                <button onclick="closeAllModals()" class="p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <form id="form-new-task" onsubmit="handleAddTask(event)" class="mt-4 space-y-3.5">
+                <div><label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Task Title *</label><input id="input-task-title" type="text" required placeholder="e.g. 4. BOI Beneficial Ownership Filing" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-brandOrange"></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Due Date</label><input id="input-task-due" type="date" value="2026-11-30" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-brandOrange"></div>
+                    <div><label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Priority</label><select id="input-task-priority" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-brandOrange"><option value="High">High</option><option value="Medium">Medium</option><option value="Normal">Normal</option></select></div>
+                </div>
+                <div class="flex justify-end gap-2 pt-3"><button type="button" onclick="closeAllModals()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button><button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-brandOrange to-amber-500 shadow-md">Save Task</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-search" class="fixed inset-0 z-50 hidden items-start justify-center bg-slate-950/60 backdrop-blur-xs pt-20 p-4">
+        <div class="animate-pop bg-white dark:bg-[#131A2A] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl">
+            <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-800"><i data-lucide="search" class="w-5 h-5 text-brandBlue"></i><input id="palette-search-input" onkeyup="runQuickSearch(this.value)" type="text" placeholder="Search clients, tasks, or modules..." class="flex-1 bg-transparent text-sm font-medium focus:outline-none text-slate-900 dark:text-white"><button onclick="closeAllModals()" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-500">ESC</button></div>
+            <div id="palette-results" class="p-3 max-h-72 overflow-y-auto space-y-1"></div>
+        </div>
+    </div>
+
+    <div id="modal-calendar" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+        <div class="animate-pop bg-white dark:bg-[#131A2A] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2.5"><span class="w-9 h-9 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center"><i data-lucide="calendar-days" class="w-4 h-4"></i></span><div><h3 class="font-display font-bold text-base text-slate-900 dark:text-white">November 2026</h3><p class="text-[11px] text-slate-500">Upcoming Deadlines & Filings</p></div></div>
+                <button onclick="closeAllModals()" class="p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <div class="space-y-2.5 text-xs">
+                <div class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200/60 dark:border-blue-500/20 flex items-center justify-between"><div><div class="font-bold text-slate-900 dark:text-white">Today • Nov 24</div><div class="text-slate-500 dark:text-slate-400">Operations Review & Client Sync</div></div><span class="px-2 py-0.5 rounded-full bg-brandBlue text-white text-[10px] font-bold">Today</span></div>
+                <div class="p-3 rounded-2xl bg-orange-50 dark:bg-orange-500/10 border border-orange-200/60 dark:border-orange-500/20 flex items-center justify-between"><div><div class="font-bold text-slate-900 dark:text-white">Nov 28, 2026</div><div class="text-slate-500 dark:text-slate-400">Case Tracking & Support Tickets Due</div></div><span class="px-2 py-0.5 rounded-full bg-brandOrange text-white text-[10px] font-bold">SLA</span></div>
+                <div class="p-3 rounded-2xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200/60 dark:border-rose-500/20 flex items-center justify-between"><div><div class="font-bold text-slate-900 dark:text-white">Nov 30, 2026</div><div class="text-slate-500 dark:text-slate-400">Multi-Tier Sales & Proposals Due</div></div><span class="px-2 py-0.5 rounded-full bg-brandRose text-white text-[10px] font-bold">High</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            currentView: 'dashboard',
+            clientDisplayMode: 'cards',
+            activeFinancialTab: 'invoice',
+            activeChartTab: 'leads',
+            activeTaskCategory: 'tasks',
+            selectedCalendarDay: 24,
+            customers: [
+                { id: 1, company: 'Apex Global Ventures LLC', contact: 'Rahim Ahmed', email: 'client@demo.com', phone: '+1 307-555-0192', active: true, created: '2026-11-22', gradient: 'from-brandBlue to-indigo-600' },
+                { id: 2, company: 'Get Global Business (Proposal Roadmap)', contact: 'Admin', email: 'admin@getglobalbus.com', phone: '+880 1339-033405', active: true, created: '2026-11-22', gradient: 'from-brandOrange to-amber-500' },
+                { id: 3, company: 'Horizon Digital Holdings LLC', contact: '—', email: '—', phone: '+1 302-555-0148', active: true, created: '2026-11-22', gradient: 'from-brandViolet to-purple-600' },
+                { id: 4, company: 'Zenith E-Commerce Ltd', contact: '—', email: '—', phone: '+44 20 7946 0921', active: true, created: '2026-11-22', gradient: 'from-emerald-500 to-teal-500' }
+            ],
+            tasks: [
+                { id: 1, category: 'tasks', title: '[IN PROGRESS] 2. Multi-Tier Sales & Revenue', project: 'Get Global Business (Proposal Roadmap)', due: '2026-11-30', priority: 'High', status: 'In Progress' },
+                { id: 2, category: 'tasks', title: '[IN PROGRESS] 3. Client-Facing Proposals & Estimates', project: 'Get Global Business', due: '2026-11-30', priority: 'High', status: 'In Progress' },
+                { id: 3, category: 'tasks', title: '[IN PROGRESS] 1. Case Tracking, Support Tickets', project: 'Get Global Business', due: '2026-11-28', priority: 'High', status: 'In Progress' },
+                { id: 4, category: 'projects', title: 'US LLC Formation & BOI Gift Filing', project: 'Apex Global Ventures LLC', due: '2026-12-05', priority: 'High', status: 'In Progress' },
+                { id: 5, category: 'reminders', title: 'Follow up on $990.00 unpaid invoice', project: 'Billing & Invoices', due: '2026-11-25', priority: 'Medium', status: 'In Review' },
+                { id: 6, category: 'announcements', title: 'Q4 Compliance Filing Cutoff Notice', project: 'Internal Operations', due: '2026-11-24', priority: 'Normal', status: 'Completed' }
+            ],
+            todos: [
+                { id: 1, text: 'Verify EIN confirmation letter for Apex Global', done: false },
+                { id: 2, text: 'Send Proposal Roadmap deck to client', done: false },
+                { id: 3, text: 'Update November compliance SOP checklist', done: true }
+            ]
+        };
+
+        const financialData = {
+            invoice: [
+                { label: 'Draft', count: 0, pct: 0, color: 'bg-slate-400', text: 'text-slate-500' },
+                { label: 'Not Sent', count: 0, pct: 0, color: 'bg-amber-400', text: 'text-amber-500' },
+                { label: 'Unpaid', count: 1, pct: 50, color: 'bg-brandOrange', text: 'text-brandOrange' },
+                { label: 'Partially Paid', count: 0, pct: 0, color: 'bg-sky-500', text: 'text-sky-500' },
+                { label: 'Overdue', count: 0, pct: 0, color: 'bg-brandRose', text: 'text-brandRose' },
+                { label: 'Paid', count: 1, pct: 50, color: 'bg-brandEmerald', text: 'text-brandEmerald' }
+            ],
+            estimate: [
+                { label: 'Draft', count: 1, pct: 25, color: 'bg-slate-400', text: 'text-slate-500' },
+                { label: 'Not Sent', count: 0, pct: 0, color: 'bg-amber-400', text: 'text-amber-500' },
+                { label: 'Sent', count: 2, pct: 50, color: 'bg-brandBlue', text: 'text-brandBlue' },
+                { label: 'Expired', count: 0, pct: 0, color: 'bg-brandRose', text: 'text-brandRose' },
+                { label: 'Declined', count: 0, pct: 0, color: 'bg-rose-400', text: 'text-rose-400' },
+                { label: 'Accepted', count: 1, pct: 25, color: 'bg-brandEmerald', text: 'text-brandEmerald' }
+            ],
+            proposal: [
+                { label: 'Draft', count: 0, pct: 0, color: 'bg-slate-400', text: 'text-slate-500' },
+                { label: 'Sent', count: 1, pct: 50, color: 'bg-brandBlue', text: 'text-brandBlue' },
+                { label: 'Open', count: 1, pct: 50, color: 'bg-brandViolet', text: 'text-brandViolet' },
+                { label: 'Revised', count: 0, pct: 0, color: 'bg-amber-500', text: 'text-amber-500' },
+                { label: 'Declined', count: 0, pct: 0, color: 'bg-brandRose', text: 'text-brandRose' },
+                { label: 'Accepted', count: 0, pct: 0, color: 'bg-brandEmerald', text: 'text-brandEmerald' }
+            ]
+        };
+
+        let chartInstance = null;
+
+        function switchView(view) {
+            state.currentView = view;
+            const dash = document.getElementById('view-dashboard');
+            const clients = document.getElementById('view-clients');
+            const navDash = document.getElementById('topnav-dashboard');
+            const navClients = document.getElementById('topnav-clients');
+            const mobDash = document.getElementById('mob-nav-dash');
+            const mobClients = document.getElementById('mob-nav-clients');
+
+            if (view === 'dashboard') {
+                dash.classList.remove('hidden');
+                clients.classList.add('hidden');
+                navDash.className = 'topnav-pill flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-brandBlue dark:text-blue-400 shadow-xs transition';
+                navClients.className = 'topnav-pill flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-white/70 dark:hover:bg-slate-800/70 transition';
+                if (mobDash && mobClients) {
+                    mobDash.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-white dark:bg-slate-700 text-brandBlue shadow-2xs';
+                    mobClients.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-500 dark:text-slate-300';
+                }
+            } else {
+                dash.classList.add('hidden');
+                clients.classList.remove('hidden');
+                navClients.className = 'topnav-pill flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-brandOrange shadow-xs transition';
+                navDash.className = 'topnav-pill flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-white/70 dark:hover:bg-slate-800/70 transition';
+                if (mobDash && mobClients) {
+                    mobClients.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-white dark:bg-slate-700 text-brandOrange shadow-2xs';
+                    mobDash.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-500 dark:text-slate-300';
+                }
+                renderClients();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function jumpToSection(elementId, label) {
+            if (state.currentView !== 'dashboard') switchView('dashboard');
+            setTimeout(() => {
+                const el = document.getElementById(elementId);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                showToast(`Focused on ${label}`);
+            }, 60);
+        }
+
+        function toggleModulesPopover(e) {
+            e.stopPropagation();
+            document.getElementById('modules-popover').classList.toggle('hidden');
+        }
+
+        function openModule(name) {
+            document.getElementById('modules-popover').classList.add('hidden');
+            showToast(`Launched ${name} module`);
+        }
+
+        document.addEventListener('click', (e) => {
+            const popover = document.getElementById('modules-popover');
+            const btn = document.getElementById('modules-btn');
+            if (popover && !popover.classList.contains('hidden') && !popover.contains(e.target) && (!btn || !btn.contains(e.target))) {
+                popover.classList.add('hidden');
+            }
+        });
+
+        function switchFinancialTab(tab, btn) {
+            state.activeFinancialTab = tab;
+            document.querySelectorAll('.fin-tab').forEach(b => {
+                b.className = 'fin-tab px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
+            });
+            btn.className = 'fin-tab px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 text-brandBlue shadow-2xs transition';
+            renderFinancialBars();
+        }
+
+        function renderFinancialBars() {
+            const container = document.getElementById('financial-bars-container');
+            const items = financialData[state.activeFinancialTab];
+            container.innerHTML = items.map(item => `
+                <div class="space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-semibold text-slate-600 dark:text-slate-300">${item.label}</span>
+                        <span class="font-bold ${item.text}">${item.count} <span class="text-slate-400 font-medium">(${item.pct}%)</span></span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                        <div class="h-full ${item.color} rounded-full transition-all duration-500" style="width: ${item.pct}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function switchChartTab(tab, btn) {
+            state.activeChartTab = tab;
+            document.querySelectorAll('.chart-tab').forEach(b => {
+                b.className = 'chart-tab px-2 py-1.5 rounded-xl text-[11px] font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
+            });
+            btn.className = 'chart-tab px-2 py-1.5 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-900 text-brandBlue shadow-2xs transition';
+            renderAnalyticsChart();
+        }
+
+        function renderAnalyticsChart() {
+            const ctx = document.getElementById('horizonMainChart').getContext('2d');
+            const subtitle = document.getElementById('chart-subtitle');
+            const legendStrip = document.getElementById('chart-legend-strip');
+            const isDark = document.documentElement.classList.contains('dark');
+            const tickColor = isDark ? '#94A3B8' : '#64748B';
+
+            if (chartInstance) chartInstance.destroy();
+
+            let config = {};
+            if (state.activeChartTab === 'leads') {
+                subtitle.innerText = 'Lead conversion breakdown';
+                legendStrip.innerHTML = `<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-brandEmerald"></span>Converted Customer (1)</span><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-brandRose"></span>Lost Leads (0)</span>`;
+                config = { type: 'doughnut', data: { labels: ['Converted Customer', 'Lost Leads'], datasets: [{ data: [1, 0.05], backgroundColor: ['#10B981', '#F43F5E'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false } } } };
+            } else if (state.activeChartTab === 'projects') {
+                subtitle.innerText = 'Service Orders & Project Status';
+                legendStrip.innerHTML = `<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-brandBlue"></span>In Progress (4)</span><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-brandOrange"></span>On Hold (0)</span>`;
+                config = { type: 'doughnut', data: { labels: ['In Progress', 'Completed', 'On Hold'], datasets: [{ data: [4, 1, 0], backgroundColor: ['#2563EB', '#10B981', '#F97316'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false } } } };
+            } else if (state.activeChartTab === 'tickets') {
+                subtitle.innerText = 'Support Desk Tickets by Status';
+                legendStrip.innerHTML = `<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-brandRose"></span>Open (1)</span><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-brandViolet"></span>In Progress (1)</span><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-brandEmerald"></span>Answered (2)</span>`;
+                config = { type: 'doughnut', data: { labels: ['Open', 'In Progress', 'Answered'], datasets: [{ data: [1, 1, 2], backgroundColor: ['#F43F5E', '#8B5CF6', '#10B981'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false } } } };
+            } else {
+                subtitle.innerText = 'Weekly Payment Records ($ USD)';
+                legendStrip.innerHTML = `<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-brandBlue"></span>This Week</span><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-brandOrange"></span>Last Week</span>`;
+                config = {
+                    type: 'bar',
+                    data: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], datasets: [{ label: 'This Week', data: [450, 990, 520, 780, 640, 310, 490], backgroundColor: '#2563EB', borderRadius: 6, barPercentage: 0.55 }, { label: 'Last Week', data: [340, 610, 400, 550, 490, 220, 380], backgroundColor: '#F97316', borderRadius: 6, barPercentage: 0.55 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: tickColor, font: { size: 11 } } }, y: { grid: { color: 'rgba(148,163,184,0.12)' }, ticks: { color: tickColor, font: { size: 11 } } } } }
+                };
+            }
+            chartInstance = new Chart(ctx, config);
+        }
+
+        function switchTaskCategory(cat, btn) {
+            state.activeTaskCategory = cat;
+            document.querySelectorAll('.task-cat-btn').forEach(b => {
+                b.className = 'task-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition';
+            });
+            btn.className = 'task-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-brandBlue text-white shadow-xs transition';
+            renderTasks();
+        }
+
+        function cycleTaskStatus(id) {
+            const order = ['In Progress', 'In Review', 'Completed'];
+            const task = state.tasks.find(t => t.id === id);
+            if (!task) return;
+            task.status = order[(order.indexOf(task.status) + 1) % order.length];
+            renderTasks();
+            showToast(`Task status updated to "${task.status}"`);
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('tasks-list-container');
+            const q = (document.getElementById('task-search-input')?.value || '').toLowerCase();
+            const filtered = state.tasks.filter(t => t.category === state.activeTaskCategory && (t.title.toLowerCase().includes(q) || t.project.toLowerCase().includes(q)));
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-slate-50 dark:bg-slate-800/40 rounded-2xl">No items match your current filter.</div>`;
+                return;
+            }
+            const statusBadge = {
+                'In Progress': 'bg-blue-500/15 text-brandBlue dark:text-blue-300 border-blue-500/20',
+                'In Review': 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/20',
+                'Completed': 'bg-emerald-500/15 text-brandEmerald border-emerald-500/20'
+            };
+            const priorityBadge = {
+                'High': 'bg-rose-500/15 text-brandRose',
+                'Medium': 'bg-orange-500/15 text-brandOrange',
+                'Normal': 'bg-slate-500/15 text-slate-500 dark:text-slate-300'
+            };
+            container.innerHTML = filtered.map(task => `
+                <div class="p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 hover:border-brandBlue/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="min-w-0">
+                        <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate">${task.title}</div>
+                        <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex flex-wrap items-center gap-2">
+                            <span>${task.project}</span><span class="text-slate-300 dark:text-slate-600">•</span>
+                            <span class="inline-flex items-center gap-1 font-medium"><i data-lucide="calendar" class="w-3 h-3 text-brandOrange"></i> Due ${task.due}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="cycleTaskStatus(${task.id})" class="px-3 py-1 rounded-xl text-[11px] font-bold border cursor-pointer transition hover:scale-105 ${statusBadge[task.status]}">${task.status}</button>
+                        <span class="px-2.5 py-1 rounded-xl text-[11px] font-bold ${priorityBadge[task.priority]}">${task.priority}</span>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function handleAddTask(e) {
+            e.preventDefault();
+            const title = document.getElementById('input-task-title').value.trim();
+            const due = document.getElementById('input-task-due').value;
+            const priority = document.getElementById('input-task-priority').value;
+            if (!title) return;
+            state.tasks.unshift({ id: Date.now(), category: 'tasks', title: `[IN PROGRESS] ${title}`, project: 'Get Global Business', due: due || '2026-11-30', priority, status: 'In Progress' });
+            document.getElementById('form-new-task').reset();
+            closeAllModals();
+            if (state.currentView !== 'dashboard') switchView('dashboard');
+            renderTasks();
+            showToast('New task added to Tasks & SLA!');
+        }
+
+        function renderTodos() {
+            const container = document.getElementById('todo-items-container');
+            document.getElementById('todo-counter').innerText = `${state.todos.filter(t => !t.done).length} Open`;
+            container.innerHTML = state.todos.map(t => `
+                <label class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 cursor-pointer hover:border-brandBlue/30 transition">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodo(${t.id})" class="w-4 h-4 rounded accent-brandBlue cursor-pointer shrink-0">
+                        <span class="text-xs font-medium truncate ${t.done ? 'line-through text-slate-400' : 'text-slate-700 dark:text-slate-200'}">${t.text}</span>
+                    </div>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0 ${t.done ? 'bg-emerald-500/15 text-brandEmerald' : 'bg-orange-500/15 text-brandOrange'}">${t.done ? 'Done' : 'Open'}</span>
+                </label>
+            `).join('');
+        }
+
+        function addTodo(e) {
+            e.preventDefault();
+            const input = document.getElementById('new-todo-input');
+            const text = input.value.trim();
+            if (!text) return;
+            state.todos.unshift({ id: Date.now(), text, done: false });
+            input.value = '';
+            renderTodos();
+            showToast('To-do item added!');
+        }
+
+        function toggleTodo(id) {
+            const item = state.todos.find(t => t.id === id);
+            if (item) item.done = !item.done;
+            renderTodos();
+        }
+
+        function renderMiniCalendar() {
+            const grid = document.getElementById('mini-calendar-grid');
+            const specialDays = { 22: true, 24: true, 28: true, 30: true };
+            let html = '';
+            for (let day = 1; day <= 30; day++) {
+                const isSelected = day === state.selectedCalendarDay;
+                const isToday = day === 24;
+                let cls = 'py-1.5 rounded-xl transition cursor-pointer ';
+                if (isSelected) cls += 'bg-gradient-to-tr from-brandBlue to-brandOrange text-white font-extrabold shadow-md';
+                else if (isToday) cls += 'bg-blue-500/15 text-brandBlue font-extrabold';
+                else if (specialDays[day]) cls += 'bg-orange-500/10 text-brandOrange font-bold hover:bg-orange-500/20';
+                else cls += 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800';
+                html += `<button onclick="selectCalendarDay(${day})" class="${cls}">${day}</button>`;
+            }
+            grid.innerHTML = html;
+        }
+
+        function selectCalendarDay(day) {
+            state.selectedCalendarDay = day;
+            const notes = { 22: 'Nov 22: 4 Clients Onboarded', 24: 'Today: Nov 24', 28: 'Nov 28: Support Tickets SLA Due', 30: 'Nov 30: Proposals & Sales Due' };
+            const label = notes[day] || `Selected: Nov ${day}, 2026`;
+            document.getElementById('calendar-selected-note').innerText = label;
+            renderMiniCalendar();
+            showToast(label);
+        }
+
+        function setClientDisplayMode(mode) {
+            state.clientDisplayMode = mode;
+            const gridEl = document.getElementById('clients-card-grid');
+            const tableEl = document.getElementById('clients-table-wrapper');
+            const btnCards = document.getElementById('mode-btn-cards');
+            const btnTable = document.getElementById('mode-btn-table');
+            if (mode === 'cards') {
+                gridEl.classList.remove('hidden'); tableEl.classList.add('hidden');
+                btnCards.className = 'flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 text-brandBlue shadow-2xs transition';
+                btnTable.className = 'flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
+            } else {
+                gridEl.classList.add('hidden'); tableEl.classList.remove('hidden');
+                btnTable.className = 'flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 text-brandBlue shadow-2xs transition';
+                btnCards.className = 'flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
+            }
+        }
+
+        function toggleCustomerActive(id) {
+            const cust = state.customers.find(c => c.id === id);
+            if (!cust) return;
+            cust.active = !cust.active;
+            renderClients();
+            showToast(`${cust.company} marked ${cust.active ? 'Active' : 'Inactive'}`);
+        }
+
+        function handleAddCustomer(e) {
+            e.preventDefault();
+            const company = document.getElementById('input-cust-company').value.trim();
+            const contact = document.getElementById('input-cust-contact').value.trim() || '—';
+            const email = document.getElementById('input-cust-email').value.trim() || '—';
+            const phone = document.getElementById('input-cust-phone').value.trim() || '+1 307-555-0100';
+            if (!company) return;
+            const gradients = ['from-brandBlue to-cyan-500', 'from-brandOrange to-rose-500', 'from-brandViolet to-indigo-600', 'from-emerald-500 to-teal-500'];
+            state.customers.unshift({ id: state.customers.length + 1, company, contact, email, phone, active: true, created: '2026-11-24', gradient: gradients[state.customers.length % gradients.length] });
+            document.getElementById('form-new-customer').reset();
+            closeAllModals();
+            switchView('clients');
+            renderClients();
+            showToast(`Added "${company}" successfully!`);
+        }
+
+        function renderClients() {
+            const q = (document.getElementById('client-search-input')?.value || '').toLowerCase();
+            const filtered = state.customers.filter(c => c.company.toLowerCase().includes(q) || c.contact.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || c.phone.toLowerCase().includes(q));
+            const total = state.customers.length;
+            const activeCount = state.customers.filter(c => c.active).length;
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-active').innerText = activeCount;
+            document.getElementById('stat-inactive').innerText = total - activeCount;
+            document.getElementById('topnav-client-count').innerText = total;
+
+            document.getElementById('clients-card-grid').innerHTML = filtered.map(c => {
+                const initials = c.company.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+                return `
+                <div class="bento-card p-5 flex flex-col justify-between gap-4">
+                    <div>
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br ${c.gradient} text-white font-display font-extrabold text-sm flex items-center justify-center shadow-md shrink-0">${initials}</div>
+                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" ${c.active ? 'checked' : ''} onchange="toggleCustomerActive(${c.id})" class="sr-only peer"><div class="w-10 h-5 bg-slate-200 dark:bg-slate-700 peer-checked:bg-brandEmerald rounded-full relative transition after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:w-4 after:h-4 after:rounded-full after:transition-all peer-checked:after:translate-x-5"></div></label>
+                        </div>
+                        <h3 class="font-display font-bold text-sm sm:text-base text-slate-900 dark:text-white mt-3.5 leading-snug">${c.company}</h3>
+                        <p class="text-[11px] font-medium text-slate-400 mt-0.5">Added ${c.created}</p>
+                        <div class="mt-4 space-y-2 text-xs">
+                            <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><i data-lucide="user" class="w-3.5 h-3.5 text-brandBlue shrink-0"></i><span class="truncate font-medium">${c.contact}</span></div>
+                            <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><i data-lucide="mail" class="w-3.5 h-3.5 text-brandOrange shrink-0"></i><span class="truncate">${c.email}</span></div>
+                            <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><i data-lucide="phone" class="w-3.5 h-3.5 text-brandEmerald shrink-0"></i><span class="font-mono text-[11px]">${c.phone}</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-3.5 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
+                        <button onclick="showToast('Composing email to ${c.email !== '—' ? c.email : c.company}')" class="flex-1 py-2 rounded-xl bg-blue-50 dark:bg-blue-500/15 hover:bg-brandBlue hover:text-white text-brandBlue dark:text-blue-300 text-xs font-bold transition flex items-center justify-center gap-1.5"><i data-lucide="mail" class="w-3.5 h-3.5"></i> Email</button>
+                        <button onclick="showToast('Calling ${c.phone}...')" class="flex-1 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-500/15 hover:bg-brandEmerald hover:text-white text-brandEmerald text-xs font-bold transition flex items-center justify-center gap-1.5"><i data-lucide="phone" class="w-3.5 h-3.5"></i> Call</button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            document.getElementById('clients-table-body').innerHTML = filtered.map(c => {
+                const initials = c.company.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+                return `
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition">
+                    <td class="py-4 pl-6 font-bold text-slate-400">${c.id}</td>
+                    <td class="py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-gradient-to-br ${c.gradient} text-white font-bold text-[11px] flex items-center justify-center">${initials}</div><span class="font-bold text-slate-900 dark:text-white">${c.company}</span></div></td>
+                    <td class="py-4 font-medium text-slate-700 dark:text-slate-300">${c.contact}</td>
+                    <td class="py-4 text-brandBlue dark:text-blue-400 font-medium">${c.email}</td>
+                    <td class="py-4 font-mono text-xs text-slate-600 dark:text-slate-400">${c.phone}</td>
+                    <td class="py-4"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" ${c.active ? 'checked' : ''} onchange="toggleCustomerActive(${c.id})" class="sr-only peer"><div class="w-9 h-5 bg-slate-200 dark:bg-slate-700 peer-checked:bg-brandEmerald rounded-full relative transition after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:w-4 after:h-4 after:rounded-full after:transition-all peer-checked:after:translate-x-4"></div></label></td>
+                    <td class="py-4 pr-6 text-xs text-slate-500">${c.created}</td>
+                </tr>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function openModal(type) {
+            closeAllModals();
+            const el = document.getElementById(`modal-${type}`);
+            if (el) {
+                el.classList.remove('hidden'); el.classList.add('flex');
+                if (type === 'search') {
+                    const input = document.getElementById('palette-search-input');
+                    input.value = ''; runQuickSearch('');
+                    setTimeout(() => input.focus(), 50);
+                }
+            }
+        }
+
+        function closeAllModals() {
+            ['customer', 'task', 'search', 'calendar'].forEach(t => {
+                const el = document.getElementById(`modal-${t}`);
+                if (el) { el.classList.add('hidden'); el.classList.remove('flex'); }
+            });
+        }
+
+        function runQuickSearch(query) {
+            const q = query.toLowerCase();
+            const resultsEl = document.getElementById('palette-results');
+            const clientMatches = state.customers.filter(c => c.company.toLowerCase().includes(q) || c.contact.toLowerCase().includes(q));
+            const taskMatches = state.tasks.filter(t => t.title.toLowerCase().includes(q));
+            let html = '';
+            if (clientMatches.length) {
+                html += `<div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">Clients & Firms</div>`;
+                html += clientMatches.map(c => `<button onclick="closeAllModals(); switchView('clients');" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-left text-xs transition"><span class="font-bold text-slate-800 dark:text-slate-100">${c.company}</span><span class="text-slate-400">${c.phone}</span></button>`).join('');
+            }
+            if (taskMatches.length) {
+                html += `<div class="px-2 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">Tasks & SLA</div>`;
+                html += taskMatches.map(t => `<button onclick="closeAllModals(); jumpToSection('tasks-card', 'Tasks & SLA');" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-left text-xs transition"><span class="font-semibold text-slate-800 dark:text-slate-100 truncate pr-3">${t.title}</span><span class="text-brandOrange font-bold shrink-0">${t.due}</span></button>`).join('');
+            }
+            resultsEl.innerHTML = html || `<div class="p-6 text-center text-xs text-slate-400">No matching clients or tasks found.</div>`;
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            renderAnalyticsChart();
+            showToast(isDark ? 'Switched to Dark Obsidian Mode' : 'Switched to Soft Alabaster Light Mode');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openModal('search'); }
+            else if (e.key === 'Escape') { closeAllModals(); document.getElementById('modules-popover')?.classList.add('hidden'); }
+        });
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-slate-900 dark:bg-slate-800 text-white text-xs font-semibold shadow-xl border border-slate-700/80 transform transition-all duration-300 translate-y-2 opacity-0';
+            toast.innerHTML = `<span class="w-2 h-2 rounded-full bg-brandOrange"></span><span>${message}</span>`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+            setTimeout(() => { toast.classList.add('opacity-0', 'translate-y-2'); setTimeout(() => toast.remove(), 300); }, 2500);
+        }
+
+        window.onload = function () {
+            lucide.createIcons();
+            renderFinancialBars();
+            renderTasks();
+            renderTodos();
+            renderMiniCalendar();
+            renderClients();
+            renderAnalyticsChart();
+        };
+    </script>
+</body>
+</html>
